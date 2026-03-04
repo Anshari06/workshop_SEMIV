@@ -47,6 +47,12 @@
                     <i class="mdi mdi-printer menu-icon"></i>
                 </a>
             </li>
+            <li class="nav-item {{ Request::is('tag-harga*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('tag-harga.index') }}">
+                    <span class="menu-title">Tag Harga</span>
+                    <i class="mdi mdi-tag-check menu-icon"></i>
+                </a>
+            </li>
 
         </ul>
     </nav>

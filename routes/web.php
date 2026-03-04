@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TagHargaController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -49,4 +50,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Undangan', [App\Http\Controllers\CetakController::class, 'cetakUndangan'])->name('undangan');
         Route::get('/Undangan/download', [App\Http\Controllers\CetakController::class, 'downloadUndangan'])->name('undangan.download');
     });
+
+    Route::prefix('tag-harga')->name('tag-harga.')->group(function () {
+        Route::get('/', [TagHargaController::class, 'index'])->name('index');
+         Route::post('/print', [TagHargaController::class, 'print'])->name('print');
+        Route::get('/create', [TagHargaController::class, 'create'])->name('create');
+        Route::post('/store', [TagHargaController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [TagHargaController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [TagHargaController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TagHargaController::class, 'destroy'])->name('destroy');
+    });
+    
 });
