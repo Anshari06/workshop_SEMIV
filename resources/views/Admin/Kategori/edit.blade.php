@@ -30,7 +30,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('kategori.update', $kategori->idkategori) }}" method="POST">
+                    <form action="{{ route('kategori.update', $kategori->idkategori) }}" method="POST" id="formKategoriEdit">
                         @csrf
                         @method('PUT')
 
@@ -43,8 +43,9 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-gradient-primary">
-                            <i class="mdi mdi-content-save"></i> Simpan
+                        <button type="button" id="btnSubmit" class="btn btn-gradient-primary">
+                            <i class="mdi mdi-content-save"></i> <span id="btnText">Simpan</span>
+                            <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         </button>
                         <a href="{{ route('kategori.index') }}" class="btn btn-light">
                             <i class="mdi mdi-arrow-left"></i> Batal
@@ -54,4 +55,31 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.getElementById('btnSubmit').addEventListener('click', function() {
+            const form = document.getElementById('formKategoriEdit');
+            const button = document.getElementById('btnSubmit');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            
+            // Check HTML5 form validity
+            if (!form.checkValidity()) {
+                // Show validation messages
+                form.reportValidity();
+                return;
+            }
+            
+            // Disable button and show spinner
+            button.disabled = true;
+            btnText.textContent = 'Menyimpan...';
+            btnSpinner.classList.remove('d-none');
+            
+            // Submit form
+            form.submit();
+        });
+    </script>
+    @endpush
+
 @endsection
