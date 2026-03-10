@@ -35,18 +35,7 @@
 
                     <form class="forms-sample" id="formBuku" action="{{ route('buku.store') }}" method="POST">
                         @csrf
-                        
-                        {{-- <div class="form-group">
-                            <label for="kode">Kode Buku</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   value="Kode akan dibuat otomatis (Contoh: NL-2 untuk Novel ke-2)" 
-                                   disabled>
-                            <small class="form-text text-muted">
-                                Kode dibuat otomatis berdasarkan kategori dan urutan buku
-                            </small>
-                        </div> --}}
-
+                    
                         <div class="form-group">
                             <label for="judul">Judul Buku <span class="text-danger">*</span></label>
                             <input type="text" 

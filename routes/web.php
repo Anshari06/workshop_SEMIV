@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TagHargaController;
+use App\Http\Controllers\JspageController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -59,6 +60,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', [TagHargaController::class, 'edit'])->name('edit');
         Route::put('/{id}', [TagHargaController::class, 'update'])->name('update');
         Route::delete('/{id}', [TagHargaController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('jspage')->name('jspage.')->group(function () {
+        Route::get('/', [JspageController::class, 'index'])->name('index');
+        Route::get('/datatables', [JspageController::class, 'datatables'])->name('datatables');
+        Route::get('/kota', [JspageController::class, 'kota'])->name('kota');
     });
     
 });

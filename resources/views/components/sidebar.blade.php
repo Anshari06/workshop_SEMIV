@@ -54,6 +54,28 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('jspage*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#jspage-menu" aria-expanded="{{ Request::is('jspage*') ? 'true' : 'false' }}" aria-controls="jspage-menu">
+                    <span class="menu-title">Page Js</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-file-chart menu-icon"></i>
+                </a>
+                <div class="collapse {{ Request::is('jspage*') ? 'show' : '' }}" id="jspage-menu">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('jspage.index') ? 'active' : '' }}" href="{{ route('jspage.index') }}">HTML Table</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('jspage.datatables') ? 'active' : '' }}" href="{{ route('jspage.datatables') }}">DataTables</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('jspage.kota') ? 'active' : '' }}" href="{{ route('jspage.kota') }}">Kota</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            
+
         </ul>
     </nav>
 </div>
