@@ -84,7 +84,7 @@
                 <div class="collapse {{ Request::is('ajax-axios*') ? 'show' : '' }}" id="ajax-axios-menu">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('ajax-axios.index') ? 'active' : '' }}" href="{{ route('ajax-axios.index') }}">AJAX Region</a>
+                            <a class="nav-link {{ Request::routeIs('ajax-axios.ajax') ? 'active' : '' }}" href="{{ route('ajax-axios.ajax') }}">AJAX Region</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ Request::routeIs('ajax-axios.axios') ? 'active' : '' }}" href="{{ route('ajax-axios.axios') }}">Axios Region</a>

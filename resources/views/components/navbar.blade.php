@@ -1,9 +1,9 @@
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-        <a class="navbar-brand brand-logo" href="index.html"><img src="{{ asset('assets/images/logo.svg') }}"
-                alt="logo" /></a>
-        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{ asset('assets/images/logo-mini.svg') }}"
-                alt="logo" /></a>
+    <div class="navbar-brand-wrapper d-flex align-items-left justify-content-start p-0 m-0">
+        <a class="navbar-brand brand-logo d-flex align-items-center gap-1 mb-0" href="{{ url('/') }}">
+            <img src="{{ asset('assets/images/apple-logo.png') }}" alt="Apple" class="d-block" style="height: 50px; object-fit: contain;">
+            <span class="fw-semibold text-dark m-0" style="font-size: 26px; line-height: 1;">Apel Web</span>
+        </a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
