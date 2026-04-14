@@ -9,8 +9,15 @@
                 <h2 class="mb-1">Menu {{ $vendor->nama_vendor }}</h2>
                 <p class="text-muted mb-0">Pilih menu lalu tambahkan ke keranjang.</p>
             </div>
-            <a href="{{ route('customer.dashboard') }}" class="btn btn-outline-secondary">Kembali</a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('customer.dashboard') }}" class="btn btn-outline-secondary">Vendor Lain</a>
+                <a href="{{ route('customer.cart') }}" class="btn btn-primary">Shopping Cart</a>
+            </div>
         </div>
+
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -86,24 +93,18 @@
                             <strong id="cart-total">Rp 0</strong>
                         </div>
 
-                        <form id="checkout-form" action="{{ route('customer.store') }}" method="POST">
+                        <form id="cart-form" action="{{ route('customer.cart.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="vendor_id" value="{{ $vendor->id }}">
                             <div id="cart-hidden-inputs"></div>
 
-                            <div class="mb-3">
-                                <label for="customer_name" class="form-label">Nama Pemesan</label>
-                                <input type="text" class="form-control" id="customer_name" name="customer_name" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="customer_phone" class="form-label">No HP</label>
-                                <input type="text" class="form-control" id="customer_phone" name="customer_phone" required>
-                            </div>
-
-                            <button type="submit" class="btn btn-success w-100" id="checkout-button" disabled>
+                            <button type="submit" class="btn btn-success w-100" id="save-cart-button" disabled>
                                 Masukkan ke Keranjang
                             </button>
+
+                            <a href="{{ route('customer.cart') }}" class="btn btn-outline-primary w-100 mt-2">
+                                Lihat Shopping Cart
+                            </a>
                         </form>
                     </div>
                 </div>
@@ -175,7 +176,7 @@
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
             const hiddenInputs = document.getElementById('cart-hidden-inputs');
-            const checkoutButton = document.getElementById('checkout-button');
+            const saveCartButton = document.getElementById('save-cart-button');
 
             let html = '';
             let total = 0;
@@ -186,7 +187,7 @@
             if (ids.length === 0) {
                 cartItems.innerHTML = '<p class="text-muted mb-0">Belum ada item dipilih.</p>';
                 cartTotal.textContent = 'Rp 0';
-                checkoutButton.disabled = true;
+                saveCartButton.disabled = true;
                 return;
             }
 
@@ -224,7 +225,7 @@
 
             cartItems.innerHTML = html;
             cartTotal.textContent = `Rp ${total.toLocaleString('id-ID')}`;
-            checkoutButton.disabled = false;
+            saveCartButton.disabled = false;
         }
     </script>
 @endpush

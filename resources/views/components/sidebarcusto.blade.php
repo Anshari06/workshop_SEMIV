@@ -6,20 +6,31 @@
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
+      @php
+        $isCartOrCheckout = request()->routeIs('customer.cart')
+          || request()->routeIs('customer.checkout')
+          || request()->routeIs('payment.show');
+      @endphp
       <li class="nav-item">
-        <a href="{{ route('customer.dashboard') }}" class="nav-link active" aria-current="page">
+        <a href="{{ route('customer.dashboard') }}"
+          class="nav-link {{ request()->routeIs('customer.dashboard') ? 'active' : 'text-white' }}"
+          aria-current="{{ request()->routeIs('customer.dashboard') ? 'page' : 'false' }}">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
           Home
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link text-white">
+        <a href="{{ route('customer.cart') }}"
+          class="nav-link {{ $isCartOrCheckout ? 'active' : 'text-white' }}"
+          aria-current="{{ $isCartOrCheckout ? 'page' : 'false' }}">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
           Shopping Cart
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link text-white">
+        <a href="#"
+          class="nav-link {{ request()->routeIs('customer.menu') || request()->routeIs('customer.menu.items') ? 'active' : 'text-white' }}"
+          aria-current="{{ request()->routeIs('customer.menu') || request()->routeIs('customer.menu.items') ? 'page' : 'false' }}">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
           Products
         </a>

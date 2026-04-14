@@ -7,7 +7,7 @@ use App\Http\Controllers\TagHargaController;
 use App\Http\Controllers\JspageController;
 use App\Http\Controllers\AjaxAxiosController;
 use App\Http\Controllers\Customer\DashboardCustomer;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Customer\Keranjang;
 
 Route::get('/', [DashboardCustomer::class, 'index'])->name('customer.dashboard');
 
@@ -15,11 +15,18 @@ Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [DashboardCustomer::class, 'index'])->name('dashboard');
     Route::get('/menu/{vendorId}', [DashboardCustomer::class, 'showMenu'])->name('menu');
     Route::get('/menu/{vendorId}/items', [DashboardCustomer::class, 'getMenuByVendor'])->name('menu.items');
-    Route::post('/order', [OrderController::class, 'store'])->name('store');
+
+    Route::get('/cart', [Keranjang::class, 'index'])->name('cart');
+    Route::post('/cart', [Keranjang::class, 'store'])->name('cart.store');
+    Route::patch('/cart/{vendorId}/item/{menuId}', [Keranjang::class, 'updateItem'])->name('cart.item.update');
+    Route::delete('/cart/{vendorId}/item/{menuId}', [Keranjang::class, 'removeItem'])->name('cart.item.delete');
+    Route::delete('/cart/{vendorId}', [Keranjang::class, 'removeVendor'])->name('cart.vendor.delete');
+
+    Route::post('/checkout', [Keranjang::class, 'checkout'])->name('checkout');
 });
 
 Route::prefix('payment')->name('payment.')->group(function () {
-    Route::get('/pesanan/{pesanan}', [OrderController::class, 'showPayment'])->name('show');
+    Route::get('/pesanan/{pesanan}', [Keranjang::class, 'showPayment'])->name('show');
 });
 
 Route::middleware(['guest'])->group(function () {
