@@ -27,6 +27,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
 
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/pesanan/{pesanan}', [Keranjang::class, 'showPayment'])->name('show');
+    Route::post('/midtrans/callback', [Keranjang::class, 'midtransCallback'])->name('midtrans.callback');
 });
 
 Route::middleware(['guest'])->group(function () {

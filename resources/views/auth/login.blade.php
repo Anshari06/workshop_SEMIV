@@ -72,6 +72,14 @@
                                     </a>
                                 </div>
                             </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-8 offset-md-4">
+                                    <a href="{{ url('customer/dashboard') }}" class="btn btn-dark w-100">
+                                        {{ __('Customer Page') }}
+                                    </a>
+                                </div>
+                            </div>
 
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">

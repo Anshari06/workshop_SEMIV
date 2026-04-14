@@ -3,6 +3,7 @@
 @section('title', 'Shopping Cart')
 
 @section('content')
+    
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -52,28 +53,40 @@
                                     <div class="d-flex justify-content-between align-items-start border rounded p-3 mb-2">
                                         <div>
                                             <div class="fw-semibold">{{ $item['nama_menu'] }}</div>
-                                            <small class="text-muted">Rp {{ number_format($item['harga'], 0, ',', '.') }} / item</small>
+                                            <small class="text-muted">Rp {{ number_format($item['harga'], 0, ',', '.') }} /
+                                                item</small>
                                         </div>
                                         <div class="text-end">
-                                            <div class="fw-semibold mb-2">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</div>
+                                            <div class="fw-semibold mb-2">Rp
+                                                {{ number_format($item['subtotal'], 0, ',', '.') }}</div>
                                             <div class="d-flex align-items-center gap-1">
-                                                <form action="{{ route('customer.cart.item.update', [$vendorId, $item['menu_id']]) }}" method="POST">
+                                                <form
+                                                    action="{{ route('customer.cart.item.update', [$vendorId, $item['menu_id']]) }}"
+                                                    method="POST">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <input type="hidden" name="qty" value="{{ max(1, $item['qty'] - 1) }}">
-                                                    <button class="btn btn-sm btn-outline-secondary" type="submit">-</button>
+                                                    <input type="hidden" name="qty"
+                                                        value="{{ max(1, $item['qty'] - 1) }}">
+                                                    <button class="btn btn-sm btn-outline-secondary"
+                                                        type="submit">-</button>
                                                 </form>
                                                 <span class="px-2">{{ $item['qty'] }}</span>
-                                                <form action="{{ route('customer.cart.item.update', [$vendorId, $item['menu_id']]) }}" method="POST">
+                                                <form
+                                                    action="{{ route('customer.cart.item.update', [$vendorId, $item['menu_id']]) }}"
+                                                    method="POST">
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="qty" value="{{ $item['qty'] + 1 }}">
-                                                    <button class="btn btn-sm btn-outline-secondary" type="submit">+</button>
+                                                    <button class="btn btn-sm btn-outline-secondary"
+                                                        type="submit">+</button>
                                                 </form>
-                                                <form action="{{ route('customer.cart.item.delete', [$vendorId, $item['menu_id']]) }}" method="POST">
+                                                <form
+                                                    action="{{ route('customer.cart.item.delete', [$vendorId, $item['menu_id']]) }}"
+                                                    method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="btn btn-sm btn-outline-danger" type="submit">Hapus</button>
+                                                    <button class="btn btn-sm btn-outline-danger"
+                                                        type="submit">Hapus</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -100,12 +113,14 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label for="customer_name" class="form-label">Nama Pemesan</label>
-                                    <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+                                    <input type="text" class="form-control" id="customer_name" name="customer_name"
+                                        required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="customer_phone" class="form-label">No HP</label>
-                                    <input type="text" class="form-control" id="customer_phone" name="customer_phone" required>
+                                    <input type="text" class="form-control" id="customer_phone" name="customer_phone"
+                                        required>
                                 </div>
 
                                 <button type="submit" class="btn btn-success w-100">Checkout Semua Vendor</button>

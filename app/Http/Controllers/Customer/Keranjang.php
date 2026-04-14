@@ -9,10 +9,22 @@ use App\Models\pesanan;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Midtrans\Config as MidtransConfig;
+use Midtrans\Notification;
+use Midtrans\Snap;
 
 class Keranjang extends Controller
 {
     private const CART_SESSION_KEY = 'shopping_cart';
+
+    private function initMidtrans(): void
+    {
+        MidtransConfig::$serverKey = config('services.midtrans.server_key');
+        MidtransConfig::$isProduction = (bool) config('services.midtrans.is_production', false);
+        MidtransConfig::$isSanitized = (bool) config('services.midtrans.is_sanitized', true);
+        MidtransConfig::$is3ds = (bool) config('services.midtrans.is_3ds', true);
+    }
 
     public function index()
     {
@@ -200,6 +212,8 @@ class Keranjang extends Controller
 
     public function showPayment(pesanan $pesanan)
     {
+        $this->initMidtrans();
+
         $pesanan->load('detail_pesanans.menu');
 
         $orderCode = 'INV-' . str_pad($pesanan->id, 6, '0', STR_PAD_LEFT);
@@ -217,6 +231,39 @@ class Keranjang extends Controller
             ];
         })->toArray();
 
+        $midtransOrderId = 'ORDER-' . $pesanan->id . '-' . now()->format('YmdHis');
+
+        $snapPayload = [
+            'transaction_details' => [
+                'order_id' => $midtransOrderId,
+                'gross_amount' => (int) $total,
+            ],
+            'customer_details' => [
+                'first_name' => $customerName,
+                'phone' => '-',
+            ],
+            'item_details' => $pesanan->detail_pesanans->map(function ($detail) {
+                return [
+                    'id' => 'menu-' . $detail->id_menu,
+                    'price' => (int) ($detail->menu->harga ?? 0),
+                    'quantity' => (int) $detail->jumlah,
+                    'name' => $detail->menu->nama_menu ?? 'Item',
+                ];
+            })->toArray(),
+        ];
+
+        if ($serviceFee > 0) {
+            $snapPayload['item_details'][] = [
+                'id' => 'service-fee',
+                'price' => (int) $serviceFee,
+                'quantity' => 1,
+                'name' => 'Biaya Layanan',
+            ];
+        }
+    
+        $snapToken = Snap::getSnapToken($snapPayload);
+        $midtransClientKey = config('services.midtrans.client_key');
+
         return view('payment.show', compact(
             'orderCode',
             'customerName',
@@ -225,8 +272,60 @@ class Keranjang extends Controller
             'serviceFee',
             'total',
             'items',
-            'pesanan'
+            'pesanan',
+            'snapToken',
+            'midtransClientKey'
         ));
+    }
+
+    public function midtransCallback(Request $request)
+    {
+        $this->initMidtrans();
+
+        try {
+            $notification = new Notification();
+        } catch (\Throwable $e) {
+            Log::error('Midtrans callback parse error', ['message' => $e->getMessage()]);
+            return response()->json(['message' => 'Invalid notification'], 400);
+        }
+
+        $transactionStatus = $notification->transaction_status ?? null;
+        $orderId = $notification->order_id ?? null;
+
+        if (! $orderId || ! str_starts_with($orderId, 'ORDER-')) {
+            return response()->json(['message' => 'Unknown order id'], 400);
+        }
+
+        $segments = explode('-', $orderId);
+        $pesananId = isset($segments[1]) ? (int) $segments[1] : 0;
+        $pesanan = pesanan::find($pesananId);
+
+        if (! $pesanan) {
+            return response()->json(['message' => 'Pesanan not found'], 404);
+        }
+
+        switch ($transactionStatus) {
+            case 'capture':
+            case 'settlement':
+                $pesanan->status = 1;
+                $pesanan->metode_pembayaran = 1;
+                break;
+            case 'pending':
+                $pesanan->status = 0;
+                break;
+            case 'deny':
+            case 'cancel':
+            case 'expire':
+                $pesanan->status = 2;
+                break;
+            default:
+                Log::warning('Midtrans unknown status', ['status' => $transactionStatus, 'order_id' => $orderId]);
+                break;
+        }
+
+        $pesanan->save();
+
+        return response()->json(['message' => 'OK']);
     }
 
     private function recalculateVendorSubtotal(array $items): int

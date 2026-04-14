@@ -3,6 +3,7 @@
 @section('title', 'Checkout Berhasil')
 
 @section('content')
+    
     <div class="container-fluid">
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4">

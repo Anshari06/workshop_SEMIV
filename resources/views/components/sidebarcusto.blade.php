@@ -35,6 +35,15 @@
           Products
         </a>
       </li>
+      <hr>
+      <li>
+        <a href="{{ route('login') }}"
+          class="btn w-100 d-flex align-items-center justify-content-center {{ request()->routeIs('login') ? 'btn-light text-dark fw-semibold' : 'btn-outline-light' }}"
+          aria-current="{{ request()->routeIs('login') ? 'page' : 'false' }}">
+          <svg class="bi" width="16" height="16"><use xlink:href="#grid"></use></svg>
+          <span>Login</span>
+        </a>
+      </li>
     </ul>
     <hr>
     <div class="dropdown">
@@ -43,11 +52,7 @@
         <strong>mdo</strong>
       </a>
       <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-        <li><a class="dropdown-item" href="#">New project...</a></li>
-        <li><a class="dropdown-item" href="#">Settings</a></li>
-        <li><a class="dropdown-item" href="#">Profile</a></li>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">Sign out</a></li>
       </ul>
     </div>
 </div>

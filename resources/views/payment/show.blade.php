@@ -92,22 +92,8 @@
                                         <strong class="text-primary">Rp {{ number_format($total, 0, ',', '.') }}</strong>
                                     </div>
 
-                                    <form action="{{ $paymentAction ?? '#' }}" method="POST">
-                                        @csrf
-
-                                        <div class="mb-3">
-                                            <label for="payment_method" class="form-label">Metode Pembayaran</label>
-                                            <select id="payment_method" name="payment_method" class="form-select" required>
-                                                <option value="">Pilih metode</option>
-                                                <option value="qris">QRIS</option>
-                                                <option value="va_bca">Virtual Account BCA</option>
-                                                <option value="va_bni">Virtual Account BNI</option>
-                                                <option value="ewallet">E-Wallet</option>
-                                            </select>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary w-100 py-2">Bayar Sekarang</button>
-                                    </form>
+                                    <button type="button" id="pay-button" class="btn btn-primary w-100 py-2">Bayar Sekarang</button>
+                                    <small class="text-muted d-block mt-2">Kamu akan diarahkan ke Midtrans Snap untuk memilih metode pembayaran.</small>
                                 </div>
                             </div>
                         </div>
@@ -116,4 +102,28 @@
             </div>
         </div>
     </div>
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ $midtransClientKey }}"></script>
+    <script>
+        const successRedirectUrl = '{{ route('customer.dashboard') }}';
+
+        document.getElementById('pay-button').addEventListener('click', function() {
+            window.snap.pay('{{ $snapToken }}', {
+                onSuccess: function(result) {
+                    alert('Pembayaran berhasil.');
+                    window.location.href = successRedirectUrl;
+                },
+                onPending: function(result) {
+                    alert('Pembayaran pending. Silakan selesaikan pembayaran.');
+                },
+                onError: function(result) {
+                    alert('Pembayaran gagal. Silakan coba lagi.');
+                    console.error(result);
+                },
+                onClose: function() {
+                    console.log('Popup Midtrans ditutup sebelum menyelesaikan pembayaran.');
+                }
+            });
+        });
+    </script>
 @endsection
