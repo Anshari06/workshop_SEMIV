@@ -178,6 +178,7 @@
 
         <div class="navigation">
             <a href="{{ route('jspage.index') }}">← Halaman 1 (HTML Table)</a>
+            <a href="{{ route('jspage.kota') }}">Halaman 3 (Select dan Select2) →</a>
         </div>
     </div>
 

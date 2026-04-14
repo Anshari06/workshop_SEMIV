@@ -79,6 +79,25 @@
             border: 1px dashed #d7e0ec;
         }
 
+        .navigation {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .navigation a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4b49ac;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .navigation a:hover {
+            background: #35338c;
+        }
+
         .select2-container {
             width: 100% !important;
         }
@@ -124,11 +143,11 @@
         <h3 class="page-title">
             <span class="page-title-icon bg-gradient-primary text-white me-2">
                 <i class="mdi mdi-city"></i>
-            </span> Page JavaScript - Select dan Select2
+            </span> Page JavaScript - Halaman 3 (Select dan Select2)
         </h3>
         <nav aria-label="breadcrumb">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Page JavaScript - Select</li>
+                <li class="breadcrumb-item active" aria-current="page">Page JavaScript - Select dan Select2</li>
             </ul>
         </nav>
     </div>
@@ -188,6 +207,11 @@
                     Kota Terpilih: <span id="kotaTerpilihSelect2">-</span>
                 </div>
             </div>
+        </div>
+
+        <div class="navigation">
+            <a href="{{ route('jspage.index') }}">← Halaman 1 (HTML Table)</a>
+            <a href="{{ route('jspage.datatables') }}">Halaman 2 (DataTables) →</a>
         </div>
     </div>
 @endsection

@@ -185,6 +185,7 @@
 
         <div class="navigation">
             <a href="{{ route('jspage.datatables') }}">Halaman 2 (DataTables) →</a>
+            <a href="{{ route('jspage.kota') }}">Halaman 3 (Select dan Select2) →</a>
         </div>
     </div>
 

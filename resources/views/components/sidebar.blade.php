@@ -1,4 +1,4 @@
-<div>
+﻿<div>
     <!-- It is quality rather than quantity that matters. - Lucius Annaeus Seneca -->
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
@@ -74,8 +74,27 @@
                     </ul>
                 </div>
             </li>
+
+            <li class="nav-item {{ Request::is('ajax-axios*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ajax-axios-menu" aria-expanded="{{ Request::is('ajax-axios*') ? 'true' : 'false' }}" aria-controls="ajax-axios-menu">
+                    <span class="menu-title">Modul 5</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-map menu-icon"></i>
+                </a>
+                <div class="collapse {{ Request::is('ajax-axios*') ? 'show' : '' }}" id="ajax-axios-menu">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('ajax-axios.index') ? 'active' : '' }}" href="{{ route('ajax-axios.index') }}">AJAX Region</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('ajax-axios.axios') ? 'active' : '' }}" href="{{ route('ajax-axios.axios') }}">Axios Region</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             
 
         </ul>
     </nav>
 </div>
+

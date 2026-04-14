@@ -1,10 +1,11 @@
-<?php
+﻿<?php
 
 use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TagHargaController;
 use App\Http\Controllers\JspageController;
+use App\Http\Controllers\AjaxAxiosController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -67,5 +68,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/datatables', [JspageController::class, 'datatables'])->name('datatables');
         Route::get('/kota', [JspageController::class, 'kota'])->name('kota');
     });
+
+    Route::prefix('ajax-axios')->name('ajax-axios.')->group(function () {
+        Route::get('/', [AjaxAxiosController::class, 'ajax'])->name('ajax');
+        Route::get('/axios', [AjaxAxiosController::class, 'axios'])->name('axios');
+        Route::get('/regencies', [AjaxAxiosController::class, 'regencies'])->name('regencies');
+        Route::get('/districts', [AjaxAxiosController::class, 'districts'])->name('districts');
+        Route::get('/villages', [AjaxAxiosController::class, 'villages'])->name('villages');
+    });
     
 });
+
