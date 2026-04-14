@@ -6,9 +6,20 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TagHargaController;
 use App\Http\Controllers\JspageController;
 use App\Http\Controllers\AjaxAxiosController;
+use App\Http\Controllers\Customer\DashboardCustomer;
+use App\Http\Controllers\OrderController;
 
-Route::get('/', function () {
-    return redirect()->route('login');
+Route::get('/', [DashboardCustomer::class, 'index'])->name('customer.dashboard');
+
+Route::prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [DashboardCustomer::class, 'index'])->name('dashboard');
+    Route::get('/menu/{vendorId}', [DashboardCustomer::class, 'showMenu'])->name('menu');
+    Route::get('/menu/{vendorId}/items', [DashboardCustomer::class, 'getMenuByVendor'])->name('menu.items');
+    Route::post('/order', [OrderController::class, 'store'])->name('store');
+});
+
+Route::prefix('payment')->name('payment.')->group(function () {
+    Route::get('/pesanan/{pesanan}', [OrderController::class, 'showPayment'])->name('show');
 });
 
 Route::middleware(['guest'])->group(function () {
