@@ -8,6 +8,7 @@ use App\Http\Controllers\JspageController;
 use App\Http\Controllers\AjaxAxiosController;
 use App\Http\Controllers\Customer\DashboardCustomer;
 use App\Http\Controllers\Customer\Keranjang;
+use App\Http\Controllers\Vendor\VendorDashboardController;
 
 Route::get('/', [DashboardCustomer::class, 'index'])->name('customer.dashboard');
 
@@ -27,6 +28,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
 
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/pesanan/{pesanan}', [Keranjang::class, 'showPayment'])->name('show');
+    Route::post('/pesanan/{pesanan}/confirm', [Keranjang::class, 'confirmPayment'])->name('confirm');
     Route::post('/midtrans/callback', [Keranjang::class, 'midtransCallback'])->name('midtrans.callback');
 });
 
@@ -96,5 +98,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/villages', [AjaxAxiosController::class, 'villages'])->name('villages');
     });
     
+    Route::middleware(['vendor'])->group(function () {
+        Route::get('/',[VendorDashboardController::class, 'index'])->name('dashboard');
+    }); 
 });
 

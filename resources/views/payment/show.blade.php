@@ -106,12 +106,40 @@
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ $midtransClientKey }}"></script>
     <script>
         const successRedirectUrl = '{{ route('customer.dashboard') }}';
+        const confirmPaymentUrl = '{{ route('payment.confirm', ['pesanan' => $pesanan->id]) }}';
+        const csrfToken = '{{ csrf_token() }}';
+
+        async function confirmPaymentToServer(orderId) {
+            const response = await fetch(confirmPaymentUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Gagal sinkronisasi status pembayaran ke server.');
+            }
+
+            return response.json();
+        }
 
         document.getElementById('pay-button').addEventListener('click', function() {
             window.snap.pay('{{ $snapToken }}', {
-                onSuccess: function(result) {
-                    alert('Pembayaran berhasil.');
-                    window.location.href = successRedirectUrl;
+                onSuccess: async function(result) {
+                    try {
+                        await confirmPaymentToServer(result.order_id);
+                        alert('Pembayaran berhasil.');
+                        window.location.href = successRedirectUrl;
+                    } catch (error) {
+                        alert(error.message || 'Pembayaran berhasil, tapi sinkronisasi status gagal.');
+                        console.error(error);
+                    }
                 },
                 onPending: function(result) {
                     alert('Pembayaran pending. Silakan selesaikan pembayaran.');

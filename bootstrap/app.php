@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'vendor' => \App\Http\Middleware\IsVendor::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'payment/midtrans/callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

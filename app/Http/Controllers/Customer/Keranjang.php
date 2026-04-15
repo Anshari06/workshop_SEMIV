@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Notification;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class Keranjang extends Controller
 {
@@ -326,6 +327,61 @@ class Keranjang extends Controller
         $pesanan->save();
 
         return response()->json(['message' => 'OK']);
+    }
+
+    public function confirmPayment(Request $request, pesanan $pesanan)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required|string',
+        ]);
+
+        $this->initMidtrans();
+
+        try {
+            $statusResponse = Transaction::status($validated['order_id']);
+        } catch (\Throwable $e) {
+            Log::error('Midtrans status check failed', [
+                'pesanan_id' => $pesanan->id,
+                'order_id' => $validated['order_id'],
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Gagal verifikasi status pembayaran ke Midtrans.',
+            ], 500);
+        }
+
+        $transactionStatus = $statusResponse->transaction_status ?? null;
+
+        switch ($transactionStatus) {
+            case 'capture':
+            case 'settlement':
+                $pesanan->status = 1;
+                $pesanan->metode_pembayaran = 1;
+                break;
+            case 'pending':
+                $pesanan->status = 0;
+                break;
+            case 'deny':
+            case 'cancel':
+            case 'expire':
+                $pesanan->status = 2;
+                break;
+            default:
+                Log::warning('Midtrans confirm unknown status', [
+                    'pesanan_id' => $pesanan->id,
+                    'order_id' => $validated['order_id'],
+                    'status' => $transactionStatus,
+                ]);
+                break;
+        }
+
+        $pesanan->save();
+
+        return response()->json([
+            'message' => 'Status pembayaran berhasil diperbarui.',
+            'status' => (int) $pesanan->status,
+        ]);
     }
 
     private function recalculateVendorSubtotal(array $items): int
