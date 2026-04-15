@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Vendor extends Model
 {
     protected $table = 'vendor';
-    protected $fillable = ['nama_vendor', 'id_user'];
+    protected $fillable = ['nama_vendor', 'iduser'];
     public $timestamps = false;
 
     public function user()

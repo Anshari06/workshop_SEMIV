@@ -68,6 +68,15 @@ class LoginController extends Controller
             // Login langsung tanpa OTP untuk login biasa
             Auth::login($user);
             session(['username' => $user->username]);
+
+            $activeRole = $user->roleuser
+                ?->firstWhere('status', 1)
+                ?? $user->roleuser?->first();
+
+            if (($activeRole?->idrole ?? '') === '2' || strtolower((string) ($activeRole?->role?->nama_role ?? '')) === 'vendor') {
+                return redirect()->route('vendor.dashboard');
+            }
+
             return redirect()->route('dashboard');
         }
 

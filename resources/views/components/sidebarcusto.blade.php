@@ -18,7 +18,7 @@
 
         $isVendor = $roleName === 'vendor' || (string) $roleId === '2';
         $isAdmin = in_array($roleName, ['admin', 'administrator'], true) || (string) $roleId === '1';
-        $isCustomer = ! $isLoggedIn || (! $isVendor && ! $isAdmin);
+        $isCustomer = !$isLoggedIn || (!$isVendor && !$isAdmin);
 
         $isCartOrCheckout =
             request()->routeIs('customer.cart') ||
@@ -41,7 +41,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('customer.cart') }}" class="nav-link {{ $isCartOrCheckout ? 'active' : 'text-white' }}"
+                <a href="{{ route('customer.cart') }}"
+                    class="nav-link {{ $isCartOrCheckout ? 'active' : 'text-white' }}"
                     aria-current="{{ $isCartOrCheckout ? 'page' : 'false' }}">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#table"></use>
@@ -60,20 +61,40 @@
                 </a>
             </li>
         @endif
-
+        {{--  --}}
         @if ($isVendor)
             <li class="nav-item">
-                <a href="{{ route('dashboard') }}"
-                    class="nav-link {{ request()->routeIs('dashboard') ? 'active' : 'text-white' }}"
-                    aria-current="{{ request()->routeIs('dashboard') ? 'page' : 'false' }}">
+                <a href="{{ route('vendor.dashboard') }}"
+                    class="nav-link {{ request()->routeIs('vendor.dashboard') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('vendor.dashboard') ? 'page' : 'false' }}">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#home"></use>
                     </svg>
-                    Dashboard Vendor
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{{route('vendor.pesanan')}}"
+                    class="nav-link {{ request()->routeIs('vendor.pesanan') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('vendor.pesanan') ? 'page' : 'false' }}">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#list"></use>
+                    </svg>
+                    Pesanan
+                </a>
+            </li>
+            <li>
+                <a href="{{route ('vendor.menu')}}"
+                    class="nav-link {{ request()->routeIs('vendor.menu.*') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('vendor.menu.*') ? 'page' : 'false' }}">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid"></use>
+                    </svg>
+                    Edit Menu
                 </a>
             </li>
         @endif
-
+        {{--  --}}
         @if ($isAdmin)
             <li class="nav-item">
                 <a href="{{ route('dashboard') }}"
@@ -109,7 +130,7 @@
 
         <hr>
 
-        @if (! $isLoggedIn)
+        @if (!$isLoggedIn)
             <li>
                 <a href="{{ route('login') }}"
                     class="btn w-100 d-flex align-items-center justify-content-center {{ request()->routeIs('login') ? 'btn-light text-dark fw-semibold' : 'btn-outline-light' }}"
@@ -130,7 +151,8 @@
     @if ($isLoggedIn)
         <hr>
         <div class="d-flex align-items-center">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+            <img src="https://github.com/mdo.png" alt="" width="32" height="32"
+                class="rounded-circle me-2">
             <div class="small">
                 <div class="fw-semibold">{{ auth()->user()->username ?? auth()->user()->email }}</div>
                 <div class="text-light-emphasis">{{ $activeRoleUser?->role?->nama_role ?? 'User' }}</div>

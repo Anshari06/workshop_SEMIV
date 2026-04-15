@@ -10,8 +10,6 @@ use App\Http\Controllers\Customer\DashboardCustomer;
 use App\Http\Controllers\Customer\Keranjang;
 use App\Http\Controllers\Vendor\VendorDashboardController;
 
-Route::get('/', [DashboardCustomer::class, 'index'])->name('customer.dashboard');
-
 Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [DashboardCustomer::class, 'index'])->name('dashboard');
     Route::get('/menu/{vendorId}', [DashboardCustomer::class, 'showMenu'])->name('menu');
@@ -33,6 +31,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
 });
 
 Route::middleware(['guest'])->group(function () {
+    Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('root');
     Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
     Route::get('auth/google', [GoogleController::class, 'redirect']);
     Route::get('auth/google/callback', [GoogleController::class, 'callback']);
@@ -76,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('tag-harga')->name('tag-harga.')->group(function () {
         Route::get('/', [TagHargaController::class, 'index'])->name('index');
-         Route::post('/print', [TagHargaController::class, 'print'])->name('print');
+        Route::post('/print', [TagHargaController::class, 'print'])->name('print');
         Route::get('/create', [TagHargaController::class, 'create'])->name('create');
         Route::post('/store', [TagHargaController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [TagHargaController::class, 'edit'])->name('edit');
@@ -97,9 +96,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/districts', [AjaxAxiosController::class, 'districts'])->name('districts');
         Route::get('/villages', [AjaxAxiosController::class, 'villages'])->name('villages');
     });
-    
-    Route::middleware(['vendor'])->group(function () {
-        Route::get('/',[VendorDashboardController::class, 'index'])->name('dashboard');
-    }); 
-});
 
+    Route::middleware(['vendor'])->group(function () {
+        Route::prefix('vendor')->name('vendor.')->middleware(['vendor'])->group(function () {
+            Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/pesanan', [VendorDashboardController::class, 'pesanan'])->name('pesanan');
+            Route::get('/menu', [VendorDashboardController::class, 'menu'])->name('menu');
+        });
+    });
+});
