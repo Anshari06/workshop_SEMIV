@@ -101,7 +101,11 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('vendor')->name('vendor.')->middleware(['vendor'])->group(function () {
             Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
             Route::get('/pesanan', [VendorDashboardController::class, 'pesanan'])->name('pesanan');
+            Route::get('/pesanan/{pesananId}', [VendorDashboardController::class, 'pesananDetail'])->name('pesanan.detail');
             Route::get('/menu', [VendorDashboardController::class, 'menu'])->name('menu');
+            Route::post('/menu', [VendorDashboardController::class, 'menuStore'])->name('menu.store');
+            Route::put('/menu/{menuId}', [VendorDashboardController::class, 'menuUpdate'])->name('menu.update');
+            Route::delete('/menu/{menuId}', [VendorDashboardController::class, 'menuDelete'])->name('menu.delete');
         });
     });
 });

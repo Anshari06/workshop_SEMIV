@@ -131,7 +131,7 @@
                 <div class="card metric-card">
                     <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Pesanan Terbaru</h5>
-                        <a href="#" class="btn btn-sm btn-outline-secondary">Lihat Semua</a>
+                        <a href="{{ route('vendor.pesanan') }}" class="btn btn-sm btn-outline-secondary">Lihat Semua</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -180,9 +180,9 @@
                         <h5 class="mb-0">Aksi Cepat</h5>
                     </div>
                     <div class="card-body d-grid gap-2">
-                        <a href="#" class="btn btn-success"><i class="bi bi-plus-lg me-2"></i>Tambah Menu</a>
-                        <a href="#" class="btn btn-outline-primary"><i class="bi bi-list-ul me-2"></i>Kelola Menu</a>
-                        <a href="#" class="btn btn-outline-dark"><i class="bi bi-receipt me-2"></i>Lihat Pesanan</a>
+                        <a href="{{ route('vendor.menu') }}" class="btn btn-success"><i class="bi bi-plus-lg me-2"></i>Tambah Menu</a>
+                        <a href="{{ route('vendor.menu') }}" class="btn btn-outline-primary"><i class="bi bi-list-ul me-2"></i>Kelola Menu</a>
+                        <a href="{{ route('vendor.pesanan') }}" class="btn btn-outline-dark"><i class="bi bi-receipt me-2"></i>Lihat Pesanan</a>
                     </div>
                 </div>
 

@@ -1,12 +1,4 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <svg class="bi me-2" width="40" height="32">
-            <use xlink:href="#bootstrap"></use>
-        </svg>
-        <img src="{{ asset('assets/images/apple.png') }}" alt="Apple Logo" height="32" class="me-2">
-        <span class="fs-4">Apel Store</span>
-    </a>
-
     @php
         $isLoggedIn = auth()->check();
         $activeRoleUser = $isLoggedIn
@@ -20,11 +12,27 @@
         $isAdmin = in_array($roleName, ['admin', 'administrator'], true) || (string) $roleId === '1';
         $isCustomer = !$isLoggedIn || (!$isVendor && !$isAdmin);
 
+        $brandTitle = 'Apel Store';
+        if ($isLoggedIn && $isVendor) {
+            $vendorName = \App\Models\Vendor::where('id_user', auth()->id())->value('nama_vendor');
+            if (!empty($vendorName)) {
+                $brandTitle = $vendorName;
+            }
+        }
+
         $isCartOrCheckout =
             request()->routeIs('customer.cart') ||
             request()->routeIs('customer.checkout') ||
             request()->routeIs('payment.show');
     @endphp
+
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <svg class="bi me-2" width="40" height="32">
+            <use xlink:href="#bootstrap"></use>
+        </svg>
+        <img src="{{ asset('assets/images/apple.png') }}" alt="Apple Logo" height="32" class="me-2">
+        <span class="fs-4">{{ $brandTitle ?? 'Apel Store' }}</span>
+    </a>
 
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
@@ -75,8 +83,8 @@
             </li>
             <li>
                 <a href="{{route('vendor.pesanan')}}"
-                    class="nav-link {{ request()->routeIs('vendor.pesanan') ? 'active' : 'text-white' }}"
-                    aria-current="{{ request()->routeIs('vendor.pesanan') ? 'page' : 'false' }}">
+                    class="nav-link {{ request()->routeIs('vendor.pesanan*') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('vendor.pesanan*') ? 'page' : 'false' }}">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#list"></use>
                     </svg>
@@ -85,8 +93,8 @@
             </li>
             <li>
                 <a href="{{route ('vendor.menu')}}"
-                    class="nav-link {{ request()->routeIs('vendor.menu.*') ? 'active' : 'text-white' }}"
-                    aria-current="{{ request()->routeIs('vendor.menu.*') ? 'page' : 'false' }}">
+                    class="nav-link {{ request()->routeIs('vendor.menu') || request()->routeIs('vendor.menu.*') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('vendor.menu') || request()->routeIs('vendor.menu.*') ? 'page' : 'false' }}">
                     <svg class="bi me-2" width="16" height="16">
                         <use xlink:href="#grid"></use>
                     </svg>
