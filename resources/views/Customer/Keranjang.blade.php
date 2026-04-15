@@ -123,6 +123,12 @@
                                         required>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="catatan" class="form-label">Catatan Pesanan (Opsional)</label>
+                                    <textarea class="form-control" id="catatan" name="catatan" rows="3"
+                                        placeholder="Catatan ke penjual"></textarea>
+                                </div>
+
                                 <button type="submit" class="btn btn-success w-100">Checkout Semua Vendor</button>
                             </form>
                         </div>

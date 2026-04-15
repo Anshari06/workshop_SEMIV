@@ -10,6 +10,7 @@
         $subtotal = $subtotal ?? 0;
         $serviceFee = $serviceFee ?? 2000;
         $total = $total ?? $subtotal + $serviceFee;
+        $catatan = $catatan ?? '-';
 
         $items = $items ?? [
             ['nama_menu' => 'Americano', 'qty' => 1, 'harga' => 18000],
@@ -77,6 +78,11 @@
                                         <strong>{{ $orderDate }}</strong>
                                     </div>
 
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">Catatan Pesanan</small>
+                                        <strong>{{ $catatan ?: '-' }}</strong>
+                                    </div>
+
                                     <hr>
 
                                     <div class="d-flex justify-content-between mb-2">
@@ -109,7 +115,7 @@
         const confirmPaymentUrl = '{{ route('payment.confirm', ['pesanan' => $pesanan->id]) }}';
         const csrfToken = '{{ csrf_token() }}';
 
-        async function confirmPaymentToServer(orderId) {
+        async function confirmPaymentToServer(result) {
             const response = await fetch(confirmPaymentUrl, {
                 method: 'POST',
                 headers: {
@@ -118,7 +124,9 @@
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    order_id: orderId,
+                    order_id: result.order_id,
+                    transaction_status: result.transaction_status ?? null,
+                    fraud_status: result.fraud_status ?? null,
                 }),
             });
 
@@ -133,12 +141,13 @@
             window.snap.pay('{{ $snapToken }}', {
                 onSuccess: async function(result) {
                     try {
-                        await confirmPaymentToServer(result.order_id);
+                        await confirmPaymentToServer(result);
                         alert('Pembayaran berhasil.');
-                        window.location.href = successRedirectUrl;
                     } catch (error) {
-                        alert(error.message || 'Pembayaran berhasil, tapi sinkronisasi status gagal.');
+                        alert('Pembayaran berhasil, tapi sinkronisasi status sedang diproses.');
                         console.error(error);
+                    } finally {
+                        window.location.href = successRedirectUrl;
                     }
                 },
                 onPending: function(result) {

@@ -160,6 +160,7 @@ class Keranjang extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_phone' => 'required|string|max:20',
+            'catatan' => 'nullable|string|max:500',
         ]);
 
         $cart = session(self::CART_SESSION_KEY, []);
@@ -193,7 +194,7 @@ class Keranjang extends Controller
                         'id_menu' => $item['menu_id'],
                         'jumlah' => $item['qty'],
                         'subtotal' => $item['subtotal'],
-                        'catatan' => null,
+                        'catatan' => $validated['catatan'] ?? null,
                     ]);
                 }
             }
@@ -231,6 +232,11 @@ class Keranjang extends Controller
                 'harga' => (int) ($detail->menu->harga ?? 0),
             ];
         })->toArray();
+
+        $catatan = $pesanan->detail_pesanans
+            ->pluck('catatan')
+            ->filter()
+            ->first();
 
         $midtransOrderId = 'ORDER-' . $pesanan->id . '-' . now()->format('YmdHis');
 
@@ -273,6 +279,7 @@ class Keranjang extends Controller
             'serviceFee',
             'total',
             'items',
+            'catatan',
             'pesanan',
             'snapToken',
             'midtransClientKey'
@@ -333,12 +340,19 @@ class Keranjang extends Controller
     {
         $validated = $request->validate([
             'order_id' => 'required|string',
+            'transaction_status' => 'nullable|string',
+            'fraud_status' => 'nullable|string',
         ]);
 
         $this->initMidtrans();
 
+        $transactionStatus = null;
+        $fraudStatus = null;
+
         try {
             $statusResponse = Transaction::status($validated['order_id']);
+            $transactionStatus = $statusResponse->transaction_status ?? null;
+            $fraudStatus = $statusResponse->fraud_status ?? null;
         } catch (\Throwable $e) {
             Log::error('Midtrans status check failed', [
                 'pesanan_id' => $pesanan->id,
@@ -346,16 +360,28 @@ class Keranjang extends Controller
                 'message' => $e->getMessage(),
             ]);
 
-            return response()->json([
-                'message' => 'Gagal verifikasi status pembayaran ke Midtrans.',
-            ], 500);
+            // Fallback dari hasil Snap callback client jika API status Midtrans sedang gagal.
+            $transactionStatus = $validated['transaction_status'] ?? null;
+            $fraudStatus = $validated['fraud_status'] ?? null;
         }
 
-        $transactionStatus = $statusResponse->transaction_status ?? null;
+        if (! $transactionStatus) {
+            return response()->json([
+                'message' => 'Status pembayaran tidak tersedia.',
+            ], 422);
+        }
 
         switch ($transactionStatus) {
             case 'capture':
+                if ($fraudStatus === 'challenge') {
+                    $pesanan->status = 0;
+                    break;
+                }
+                $pesanan->status = 1;
+                $pesanan->metode_pembayaran = 1;
+                break;
             case 'settlement':
+            case 'authorize':
                 $pesanan->status = 1;
                 $pesanan->metode_pembayaran = 1;
                 break;
@@ -365,6 +391,7 @@ class Keranjang extends Controller
             case 'deny':
             case 'cancel':
             case 'expire':
+            case 'failure':
                 $pesanan->status = 2;
                 break;
             default:
