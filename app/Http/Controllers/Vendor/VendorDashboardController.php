@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\detail_pesanan;
 use App\Models\menu;
 use App\Models\Vendor;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -95,7 +96,7 @@ class VendorDashboardController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('path_gambar')) {
-            $imagePath = $request->file('path_gambar')->store('menus', 'public');
+            $imagePath = $this->storeMenuImageWithOriginalName($request->file('path_gambar'));
         }
 
         menu::create([
@@ -121,7 +122,7 @@ class VendorDashboardController extends Controller
 
         if ($request->hasFile('path_gambar')) {
             $this->deleteStoredImageIfLocal($menuItem->path_gambar);
-            $menuItem->path_gambar = $request->file('path_gambar')->store('menus', 'public');
+            $menuItem->path_gambar = $this->storeMenuImageWithOriginalName($request->file('path_gambar'));
         }
 
         $menuItem->nama_menu = $validated['nama_menu'];
@@ -181,6 +182,30 @@ class VendorDashboardController extends Controller
         $userId = Auth::id();
 
         return Vendor::where('id_user', $userId)->firstOrFail();
+    }
+
+    private function storeMenuImageWithOriginalName(UploadedFile $uploadedFile): string
+    {
+        $originalName = trim($uploadedFile->getClientOriginalName());
+        $safeName = preg_replace('/[<>:"\/\\\\|?*]+/', '-', $originalName) ?: '';
+        $safeName = str_replace(["\r", "\n"], '', $safeName);
+
+        if ($safeName === '') {
+            $extension = $uploadedFile->getClientOriginalExtension();
+            $safeName = 'menu-image'.($extension ? '.'.$extension : '');
+        }
+
+        $nameOnly = pathinfo($safeName, PATHINFO_FILENAME);
+        $extension = pathinfo($safeName, PATHINFO_EXTENSION);
+        $candidate = $safeName;
+        $counter = 1;
+
+        while (Storage::disk('public')->exists('menus/'.$candidate)) {
+            $candidate = $nameOnly.'-'.$counter.($extension ? '.'.$extension : '');
+            $counter++;
+        }
+
+        return $uploadedFile->storeAs('menus', $candidate, 'public');
     }
 
     private function deleteStoredImageIfLocal(?string $path): void
