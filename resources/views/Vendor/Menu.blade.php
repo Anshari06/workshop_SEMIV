@@ -142,7 +142,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
-                                                <img src="{{ $menu->image_url }}" alt="{{ $menu->nama_menu }}" class="menu-thumb" onerror="this.src='{{ asset('assets/images/apple.png') }}'">
+                                                <img src="{{ $menu->image_url }}" alt="{{ $menu->nama_menu }}" class="menu-thumb" onerror="this.src='{{ asset('assets/images/no-image.png') }}'">
                                                 <div>
                                                     <div class="fw-semibold">{{ $menu->nama_menu }}</div>
                                                     <small class="text-muted">ID Menu: {{ $menu->id }}</small>
@@ -176,7 +176,7 @@
                 @forelse ($menus as $menu)
                     <div class="col-12 col-sm-6 col-lg-4">
                         <div class="card menu-card h-100">
-                            <img src="{{ $menu->image_url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ $menu->nama_menu }}" onerror="this.src='{{ asset('assets/images/apple.png') }}'">
+                            <img src="{{ $menu->image_url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ $menu->nama_menu }}" onerror="this.src='{{ asset('assets/images/no-image.png') }}'">
                             <div class="card-body d-flex flex-column">
                                 <h6 class="card-title mb-1">{{ $menu->nama_menu }}</h6>
                                 <p class="text-primary fw-semibold mb-3">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
