@@ -40,9 +40,13 @@
                 @php $index = $i - $startPosition; @endphp
 
                 @if ($i >= $startPosition && $index >= 0 && $index < $totalData)
+                    @php
+                        $createdAt = $dataBarang[$index]->created_at ?? null;
+                        $formattedCreatedAt = $createdAt ? \Illuminate\Support\Carbon::parse($createdAt)->format('d-m-Y') : '-';
+                    @endphp
                     <strong>{{ $dataBarang[$index]->nama_barang }}</strong><br>
                     Rp {{ number_format($dataBarang[$index]->harga, 0, ',', '.') }}<br>
-                    Created_at{{ $dataBarang[$index]->created_at->format('d-m-Y') }}
+                    Created_at {{ $formattedCreatedAt }}
                 @endif
             </td>
 

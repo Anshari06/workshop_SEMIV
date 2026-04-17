@@ -26,6 +26,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
 
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/pesanan/{pesanan}', [Keranjang::class, 'showPayment'])->name('show');
+    Route::get('/pesanan/{pesanan}/qr', [Keranjang::class, 'showQr'])->name('qr');
     Route::post('/pesanan/{pesanan}/confirm', [Keranjang::class, 'confirmPayment'])->name('confirm');
     Route::post('/midtrans/callback', [Keranjang::class, 'midtransCallback'])->name('midtrans.callback');
 });
@@ -95,6 +96,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/regencies', [AjaxAxiosController::class, 'regencies'])->name('regencies');
         Route::get('/districts', [AjaxAxiosController::class, 'districts'])->name('districts');
         Route::get('/villages', [AjaxAxiosController::class, 'villages'])->name('villages');
+    });
+
+    Route::prefix('barcode')->name('barcode.')->group(function () {
+        Route::get('/', [App\Http\Controllers\BarcodeController::class, 'index'])->name('index');
+        Route::get('/{barang}/print', [App\Http\Controllers\BarcodeController::class, 'print'])->name('print');
     });
 
     Route::middleware(['vendor'])->group(function () {

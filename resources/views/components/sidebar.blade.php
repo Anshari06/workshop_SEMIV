@@ -92,7 +92,13 @@
                     </ul>
                 </div>
             </li>
-            
+
+            <li class="nav-item {{ Request::is('barcode*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('barcode.index') }}">
+                    <span class="menu-title">Barcode</span>
+                    <i class="mdi mdi-barcode menu-icon"></i>
+                </a>
+            </li>
 
         </ul>
     </nav>

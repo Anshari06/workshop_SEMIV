@@ -7,6 +7,10 @@ use App\Models\detail_pesanan;
 use App\Models\menu;
 use App\Models\pesanan;
 use App\Models\Vendor;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -284,6 +288,40 @@ class Keranjang extends Controller
             'snapToken',
             'midtransClientKey'
         ));
+    }
+
+    public function showQr(pesanan $pesanan)
+    {
+        if ((int) $pesanan->status !== 1) {
+            return redirect()->route('payment.show', ['pesanan' => $pesanan->id])
+                ->withErrors(['error' => 'Pembayaran belum lunas, QR belum tersedia.']);
+        }
+
+        $orderCode = 'INV-' . str_pad($pesanan->id, 6, '0', STR_PAD_LEFT);
+        $qrPayload = implode('|', [
+            'ORDER:' . $pesanan->id,
+            'KODE:' . $orderCode,
+            'NAMA:' . $pesanan->nama,
+            'TOTAL:' . (int) $pesanan->total,
+            'STATUS:LUNAS',
+        ]);
+
+        $writer = new PngWriter();
+        $qrCode = new QrCode(
+            data: $qrPayload,
+            encoding: new Encoding('UTF-8'),
+            errorCorrectionLevel: ErrorCorrectionLevel::Medium,
+            size: 300,
+            margin: 10
+        );
+
+        $result = $writer->write($qrCode);
+
+        return view('payment.qr', [
+            'pesanan' => $pesanan,
+            'orderCode' => $orderCode,
+            'qrDataUri' => $result->getDataUri(),
+        ]);
     }
 
     public function midtransCallback(Request $request)

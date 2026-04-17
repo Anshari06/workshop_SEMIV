@@ -51,7 +51,7 @@
                         @endif
                     </div>
 
-                    <form action="{{ route('tag-harga.print') }}" method="POST">
+                    <form id="formTagHarga" action="{{ route('tag-harga.print') }}" method="POST">
                         @csrf
 
                         <div class="row mb-3">
@@ -71,7 +71,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <button type="button" id="btnSelectAll" class="btn btn-sm btn-info">
+                            <button type="button" id="btnSelectAll" class="btn btn-sm btn-info me-2">
                                 <i class="mdi mdi-checkbox-marked"></i> Pilih Semua
                             </button>
                             <button type="button" id="btnDeselectAll" class="btn btn-sm btn-secondary">
@@ -110,28 +110,77 @@
         </div>
     </div>
     <script>
-        // Initialize DataTable dan buttons
         $(document).ready(function() {
-            // Initialize DataTable
-            var table = $('#tableBarang').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
+            const table = $('#tableBarang').DataTable({
+                paging: true,
+                lengthChange: true,
+                searching: true,
+                ordering: true,
             });
 
-            // Tombol Pilih Semua
-            $('#btnSelectAll').click(function(e) {
-                e.preventDefault();
-                $('#tableBarang').find('input.barang-checkbox').prop('checked', true);
-                console.log('Semua checkbox dipilih');
+            const selectedIds = new Set();
+
+            function syncCheckboxesOnPage() {
+                $('#tableBarang tbody input.barang-checkbox').each(function() {
+                    const id = String($(this).val());
+                    $(this).prop('checked', selectedIds.has(id));
+                });
+            }
+
+            // checkbox individual
+            $('#tableBarang').on('change', 'input.barang-checkbox', function() {
+                const id = String($(this).val());
+                if ($(this).is(':checked')) {
+                    selectedIds.add(id);
+                } else {
+                    selectedIds.delete(id);
+                }
             });
 
-            // Tombol Hapus Pilihan
-            $('#btnDeselectAll').click(function(e) {
+            // select semua checkbox (semua baris yang sedang terfilter)
+            $('#btnSelectAll').on('click', function(e) {
                 e.preventDefault();
-                $('#tableBarang').find('input.barang-checkbox').prop('checked', false);
-                console.log('Semua checkbox dihapus');
+
+                table.rows({ search: 'applied', page: 'all' }).nodes().to$().find('input.barang-checkbox').each(function() {
+                    const id = String($(this).val());
+                    selectedIds.add(id);
+                    $(this).prop('checked', true);
+                });
+
+                syncCheckboxesOnPage();
+            });
+
+            // hapus semua pilihan checkbox
+            $('#btnDeselectAll').on('click', function(e) {
+                e.preventDefault();
+                selectedIds.clear();
+                table.rows({ search: 'applied', page: 'all' }).nodes().to$().find('input.barang-checkbox').prop('checked', false);
+                syncCheckboxesOnPage();
+            });
+
+            // saat pindah halaman
+            table.on('draw', function() {
+                syncCheckboxesOnPage();
+            });
+
+            // submit form
+            $('#formTagHarga').on('submit', function(e) {
+                $(this).find('input.selected-hidden').remove();
+
+                if (selectedIds.size === 0) {
+                    e.preventDefault();
+                    alert('Pilih minimal satu barang terlebih dahulu.');
+                    return;
+                }
+
+                selectedIds.forEach((id) => {
+                    $('<input>')
+                        .attr('type', 'hidden')
+                        .attr('name', 'selected_barang[]')
+                        .addClass('selected-hidden')
+                        .val(id)
+                        .appendTo('#formTagHarga');
+                });
             });
         });
     </script>
