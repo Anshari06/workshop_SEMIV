@@ -100,6 +100,27 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('customer-camera*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#customer-camera-menu" aria-expanded="{{ Request::is('customer-camera*') ? 'true' : 'false' }}" aria-controls="customer-camera-menu">
+                    <span class="menu-title">Customer</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-camera menu-icon"></i>
+                </a>
+                <div class="collapse {{ Request::is('customer-camera*') ? 'show' : '' }}" id="customer-camera-menu">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('customer-camera.customers.index') ? 'active' : '' }}" href="{{ route('customer-camera.customers.index') }}">Data Customer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('customer-camera.create.blob') ? 'active' : '' }}" href="{{ route('customer-camera.create.blob') }}">Tambah Customer 1</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('customer-camera.create.path') ? 'active' : '' }}" href="{{ route('customer-camera.create.path') }}">Tambah Customer 2</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
         </ul>
     </nav>
 </div>

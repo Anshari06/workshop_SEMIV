@@ -8,6 +8,7 @@ use App\Http\Controllers\JspageController;
 use App\Http\Controllers\AjaxAxiosController;
 use App\Http\Controllers\Customer\DashboardCustomer;
 use App\Http\Controllers\Customer\Keranjang;
+use App\Http\Controllers\CustomerCamera;
 use App\Http\Controllers\Vendor\VendorDashboardController;
 
 Route::prefix('customer')->name('customer.')->group(function () {
@@ -101,6 +102,17 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('barcode')->name('barcode.')->group(function () {
         Route::get('/', [App\Http\Controllers\BarcodeController::class, 'index'])->name('index');
         Route::get('/{barang}/print', [App\Http\Controllers\BarcodeController::class, 'print'])->name('print');
+    });
+
+    Route::prefix('customer-camera')->name('customer-camera.')->group(function () {
+        Route::get('/customers', [CustomerCamera::class, 'index'])->name('customers.index');
+        Route::get('/tambah-blob', [CustomerCamera::class, 'createBlob'])->name('create.blob');
+        Route::post('/tambah-blob', [CustomerCamera::class, 'storeBlob'])->name('store.blob');
+        Route::get('/tambah-path', [CustomerCamera::class, 'createPath'])->name('create.path');
+        Route::post('/tambah-path', [CustomerCamera::class, 'storePath'])->name('store.path');
+        Route::get('/customers/{customer}/blob-image', [CustomerCamera::class, 'blobImage'])->name('blob-image');
+        Route::get('/api/regencies', [CustomerCamera::class, 'regenciesByProvince'])->name('api.regencies');
+        Route::get('/api/villages', [CustomerCamera::class, 'villagesByRegency'])->name('api.villages');
     });
 
     Route::middleware(['vendor'])->group(function () {
