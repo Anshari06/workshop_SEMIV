@@ -115,6 +115,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/villages', [CustomerCamera::class, 'villagesByRegency'])->name('api.villages');
     });
 
+    Route::prefix('scanner')->name('scanner.')->group(function () {
+        Route::get('/scanner', [App\Http\Controllers\ScannerController::class, 'index'])->name('index');
+    });
+
     Route::middleware(['vendor'])->group(function () {
         Route::prefix('vendor')->name('vendor.')->middleware(['vendor'])->group(function () {
             Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
@@ -126,4 +130,5 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/menu/{menuId}', [VendorDashboardController::class, 'menuDelete'])->name('menu.delete');
         });
     });
+
 });

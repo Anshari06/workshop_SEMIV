@@ -55,7 +55,8 @@
             </li>
 
             <li class="nav-item {{ Request::is('jspage*') ? 'active' : '' }}">
-                <a class="nav-link" data-bs-toggle="collapse" href="#jspage-menu" aria-expanded="{{ Request::is('jspage*') ? 'true' : 'false' }}" aria-controls="jspage-menu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#jspage-menu"
+                    aria-expanded="{{ Request::is('jspage*') ? 'true' : 'false' }}" aria-controls="jspage-menu">
                     <span class="menu-title">Page Js</span>
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-file-chart menu-icon"></i>
@@ -63,20 +64,25 @@
                 <div class="collapse {{ Request::is('jspage*') ? 'show' : '' }}" id="jspage-menu">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('jspage.index') ? 'active' : '' }}" href="{{ route('jspage.index') }}">HTML Table</a>
+                            <a class="nav-link {{ Request::routeIs('jspage.index') ? 'active' : '' }}"
+                                href="{{ route('jspage.index') }}">HTML Table</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('jspage.datatables') ? 'active' : '' }}" href="{{ route('jspage.datatables') }}">DataTables</a>
+                            <a class="nav-link {{ Request::routeIs('jspage.datatables') ? 'active' : '' }}"
+                                href="{{ route('jspage.datatables') }}">DataTables</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('jspage.kota') ? 'active' : '' }}" href="{{ route('jspage.kota') }}">Kota</a>
+                            <a class="nav-link {{ Request::routeIs('jspage.kota') ? 'active' : '' }}"
+                                href="{{ route('jspage.kota') }}">Kota</a>
                         </li>
                     </ul>
                 </div>
             </li>
 
             <li class="nav-item {{ Request::is('ajax-axios*') ? 'active' : '' }}">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ajax-axios-menu" aria-expanded="{{ Request::is('ajax-axios*') ? 'true' : 'false' }}" aria-controls="ajax-axios-menu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ajax-axios-menu"
+                    aria-expanded="{{ Request::is('ajax-axios*') ? 'true' : 'false' }}"
+                    aria-controls="ajax-axios-menu">
                     <span class="menu-title">Modul 5</span>
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-map menu-icon"></i>
@@ -84,10 +90,12 @@
                 <div class="collapse {{ Request::is('ajax-axios*') ? 'show' : '' }}" id="ajax-axios-menu">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('ajax-axios.ajax') ? 'active' : '' }}" href="{{ route('ajax-axios.ajax') }}">AJAX Region</a>
+                            <a class="nav-link {{ Request::routeIs('ajax-axios.ajax') ? 'active' : '' }}"
+                                href="{{ route('ajax-axios.ajax') }}">AJAX Region</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('ajax-axios.axios') ? 'active' : '' }}" href="{{ route('ajax-axios.axios') }}">Axios Region</a>
+                            <a class="nav-link {{ Request::routeIs('ajax-axios.axios') ? 'active' : '' }}"
+                                href="{{ route('ajax-axios.axios') }}">Axios Region</a>
                         </li>
                     </ul>
                 </div>
@@ -101,7 +109,9 @@
             </li>
 
             <li class="nav-item {{ Request::is('customer-camera*') ? 'active' : '' }}">
-                <a class="nav-link" data-bs-toggle="collapse" href="#customer-camera-menu" aria-expanded="{{ Request::is('customer-camera*') ? 'true' : 'false' }}" aria-controls="customer-camera-menu">
+                <a class="nav-link" data-bs-toggle="collapse" href="#customer-camera-menu"
+                    aria-expanded="{{ Request::is('customer-camera*') ? 'true' : 'false' }}"
+                    aria-controls="customer-camera-menu">
                     <span class="menu-title">Customer</span>
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-camera menu-icon"></i>
@@ -109,19 +119,27 @@
                 <div class="collapse {{ Request::is('customer-camera*') ? 'show' : '' }}" id="customer-camera-menu">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('customer-camera.customers.index') ? 'active' : '' }}" href="{{ route('customer-camera.customers.index') }}">Data Customer</a>
+                            <a class="nav-link {{ Request::routeIs('customer-camera.customers.index') ? 'active' : '' }}"
+                                href="{{ route('customer-camera.customers.index') }}">Data Customer</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('customer-camera.create.blob') ? 'active' : '' }}" href="{{ route('customer-camera.create.blob') }}">Tambah Customer 1</a>
+                            <a class="nav-link {{ Request::routeIs('customer-camera.create.blob') ? 'active' : '' }}"
+                                href="{{ route('customer-camera.create.blob') }}">Tambah Customer 1</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Request::routeIs('customer-camera.create.path') ? 'active' : '' }}" href="{{ route('customer-camera.create.path') }}">Tambah Customer 2</a>
+                            <a class="nav-link {{ Request::routeIs('customer-camera.create.path') ? 'active' : '' }}"
+                                href="{{ route('customer-camera.create.path') }}">Tambah Customer 2</a>
                         </li>
                     </ul>
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('scanner.index') }}">
+                    <span class="menu-title">Scanner Barcode</span>
+                    <i class="mdi mdi-scanner menu-icon"></i>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>
-
