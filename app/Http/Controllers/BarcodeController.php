@@ -26,8 +26,8 @@ class BarcodeController extends Controller
                 $product->barcode_svg = $generator->getBarcode(
                     (string) $product->id_barang,
                     $generator::TYPE_CODE_128,
-                    2,
-                    55
+                    4,
+                    90
                 );
             }
 
