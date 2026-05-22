@@ -101,6 +101,16 @@
                     Edit Menu
                 </a>
             </li>
+            <li>
+                <a href="{{route ('vendor.scanner')}}"
+                    class="nav-link {{ request()->routeIs('vendor.scanner') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('vendor.scanner') ? 'page' : 'false' }}">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid"></use>
+                    </svg>
+                    Scanner
+                </a>
+            </li>
         @endif
         {{--  --}}
         @if ($isAdmin)

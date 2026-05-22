@@ -10,6 +10,7 @@ use App\Http\Controllers\Customer\DashboardCustomer;
 use App\Http\Controllers\Customer\Keranjang;
 use App\Http\Controllers\CustomerCamera;
 use App\Http\Controllers\Vendor\VendorDashboardController;
+use App\Http\Controllers\Vendor\ScannerVendor;
 
 Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [DashboardCustomer::class, 'index'])->name('dashboard');
@@ -128,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/menu', [VendorDashboardController::class, 'menuStore'])->name('menu.store');
             Route::put('/menu/{menuId}', [VendorDashboardController::class, 'menuUpdate'])->name('menu.update');
             Route::delete('/menu/{menuId}', [VendorDashboardController::class, 'menuDelete'])->name('menu.delete');
+            Route::get('/scanner', [ScannerVendor::class, 'index'])->name('scanner');
         });
     });
 
