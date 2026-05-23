@@ -111,7 +111,7 @@
 
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ $midtransClientKey }}"></script>
     <script>
-        const successRedirectUrl = '{{ route('payment.qr', ['pesanan' => $pesanan->id]) }}';
+        const successRedirectUrl = '{{ route('payment.history', ['phone' => $pesanan->customer_phone]) }}';
         const confirmPaymentUrl = '{{ route('payment.confirm', ['pesanan' => $pesanan->id]) }}';
         const csrfToken = '{{ csrf_token() }}';
 

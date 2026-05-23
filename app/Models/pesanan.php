@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class pesanan extends Model
 {
     protected $table = 'pesanans';
-    protected $fillable = ['nama', 'total', 'metode_pembayaran', 'status'];
+    protected $fillable = ['nama', 'customer_phone', 'total', 'metode_pembayaran', 'status'];
     public $timestamps = true;
 
     public function detail_pesanans()

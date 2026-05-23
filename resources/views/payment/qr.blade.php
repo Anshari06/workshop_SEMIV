@@ -30,7 +30,10 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('customer.dashboard') }}" class="btn btn-primary w-100">Kembali ke Dashboard</a>
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('payment.history', ['phone' => $pesanan->customer_phone]) }}" class="btn btn-primary w-100">Lihat Riwayat QR</a>
+                            <a href="{{ route('customer.dashboard') }}" class="btn btn-outline-secondary w-100">Kembali ke Dashboard</a>
+                        </div>
                     </div>
                 </div>
             </div>

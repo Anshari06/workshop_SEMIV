@@ -29,6 +29,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/pesanan/{pesanan}', [Keranjang::class, 'showPayment'])->name('show');
     Route::get('/pesanan/{pesanan}/qr', [Keranjang::class, 'showQr'])->name('qr');
+    Route::get('/history', [Keranjang::class, 'history'])->name('history');
     Route::post('/pesanan/{pesanan}/confirm', [Keranjang::class, 'confirmPayment'])->name('confirm');
     Route::post('/midtrans/callback', [Keranjang::class, 'midtransCallback'])->name('midtrans.callback');
 });
@@ -130,6 +131,7 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/menu/{menuId}', [VendorDashboardController::class, 'menuUpdate'])->name('menu.update');
             Route::delete('/menu/{menuId}', [VendorDashboardController::class, 'menuDelete'])->name('menu.delete');
             Route::get('/scanner', [ScannerVendor::class, 'index'])->name('scanner');
+            Route::get('/scanner/pesanan/{pesananId}', [ScannerVendor::class, 'showOrderFromQr'])->name('scanner.order');
         });
     });
 

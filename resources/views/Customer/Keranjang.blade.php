@@ -114,13 +114,13 @@
                                 <div class="mb-3">
                                     <label for="customer_name" class="form-label">Nama Pemesan</label>
                                     <input type="text" class="form-control" id="customer_name" name="customer_name"
-                                        required>
+                                        value="{{ old('customer_name') }}" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="customer_phone" class="form-label">No HP</label>
+                                    <label for="customer_phone" class="form-label">Nomor HP Customer</label>
                                     <input type="text" class="form-control" id="customer_phone" name="customer_phone"
-                                        required>
+                                        value="{{ old('customer_phone') }}" placeholder="08xxxxxxxxxx" required>
                                 </div>
 
                                 <div class="mb-3">

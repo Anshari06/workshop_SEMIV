@@ -163,7 +163,7 @@ class Keranjang extends Controller
     {
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:20',
+            'customer_phone' => 'required|string|max:25',
             'catatan' => 'nullable|string|max:500',
         ]);
 
@@ -186,6 +186,7 @@ class Keranjang extends Controller
 
             $pesanan = pesanan::create([
                 'nama' => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'],
                 'total' => $grandTotal,
                 'metode_pembayaran' => 0,
                 'status' => 0,
@@ -251,7 +252,7 @@ class Keranjang extends Controller
             ],
             'customer_details' => [
                 'first_name' => $customerName,
-                'phone' => '-',
+                'phone' => $pesanan->customer_phone ?: '-',
             ],
             'item_details' => $pesanan->detail_pesanans->map(function ($detail) {
                 return [
@@ -298,13 +299,8 @@ class Keranjang extends Controller
         }
 
         $orderCode = 'INV-' . str_pad($pesanan->id, 6, '0', STR_PAD_LEFT);
-        $qrPayload = implode('|', [
-            'ORDER:' . $pesanan->id,
-            'KODE:' . $orderCode,
-            'NAMA:' . $pesanan->nama,
-            'TOTAL:' . (int) $pesanan->total,
-            'STATUS:LUNAS',
-        ]);
+        // Modul meminta QR berisi id pesanan.
+        $qrPayload = (string) $pesanan->id;
 
         $writer = new PngWriter();
         $qrCode = new QrCode(
@@ -321,6 +317,24 @@ class Keranjang extends Controller
             'pesanan' => $pesanan,
             'orderCode' => $orderCode,
             'qrDataUri' => $result->getDataUri(),
+        ]);
+    }
+
+    public function history(Request $request)
+    {
+        $phone = trim((string) $request->query('phone', ''));
+        $orders = collect();
+
+        if ($phone !== '') {
+            $orders = pesanan::with(['detail_pesanans.menu.vendor'])
+                ->where('customer_phone', $phone)
+                ->orderByDesc('id')
+                ->get();
+        }
+
+        return view('Customer.CheckoutResult', [
+            'phone' => $phone,
+            'orders' => $orders,
         ]);
     }
 

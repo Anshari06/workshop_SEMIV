@@ -23,7 +23,8 @@
         $isCartOrCheckout =
             request()->routeIs('customer.cart') ||
             request()->routeIs('customer.checkout') ||
-            request()->routeIs('payment.show');
+            request()->routeIs('payment.show') ||
+            request()->routeIs('payment.history');
     @endphp
 
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -66,6 +67,16 @@
                         <use xlink:href="#grid"></use>
                     </svg>
                     Products
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('payment.history') }}"
+                    class="nav-link {{ request()->routeIs('payment.history') ? 'active' : 'text-white' }}"
+                    aria-current="{{ request()->routeIs('payment.history') ? 'page' : 'false' }}">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#table"></use>
+                    </svg>
+                    Riwayat QR
                 </a>
             </li>
         @endif
