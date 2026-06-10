@@ -140,6 +140,14 @@
                     <i class="mdi mdi-scanner menu-icon"></i>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('Geotag.index') }}">
+                    <span class="menu-title">Geotag</span>
+                    <i class="mdi mdi-map-marker menu-icon"></i>
+                </a>
+            </li>
+
         </ul>
     </nav>
 </div>

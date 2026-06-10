@@ -121,6 +121,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/scanner', [App\Http\Controllers\ScannerController::class, 'index'])->name('index');
     });
 
+    Route::prefix('geotag')->name('Geotag.')->group(function () {
+        Route::get('/geotag', [App\Http\Controllers\GeotagController::class, 'index'])->name('index');
+    });
+
     Route::middleware(['vendor'])->group(function () {
         Route::prefix('vendor')->name('vendor.')->middleware(['vendor'])->group(function () {
             Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
