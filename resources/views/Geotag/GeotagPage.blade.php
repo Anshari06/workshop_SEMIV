@@ -164,7 +164,7 @@
 @push('scripts')
 <script>
 (function(){
-var THRESHOLD_BASE=300;
+var THRESHOLD_BASE=150;
 var state={toko:null,salesLocation:null,jarak:null,thresholdEfektif:null,status:null,scanner:null,isScanning:false};
 
 function haversine(lat1,lon1,lat2,lon2){
