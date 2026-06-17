@@ -141,11 +141,32 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('Geotag.index') }}">
+            <li class="nav-item {{ Request::is('toko*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('toko.index') }}">
+                    <span class="menu-title">Manajemen Toko</span>
+                    <i class="mdi mdi-store menu-icon"></i>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('geotag*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#geotag-menu"
+                    aria-expanded="{{ Request::is('geotag*') ? 'true' : 'false' }}" aria-controls="geotag-menu">
                     <span class="menu-title">Geotag</span>
+                    <i class="menu-arrow"></i>
                     <i class="mdi mdi-map-marker menu-icon"></i>
                 </a>
+                <div class="collapse {{ Request::is('geotag*') ? 'show' : '' }}" id="geotag-menu">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('Geotag.index') ? 'active' : '' }}"
+                                href="{{ route('Geotag.index') }}">Kunjungan Toko</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('Geotag.riwayat') ? 'active' : '' }}"
+                                href="{{ route('Geotag.riwayat') }}">Riwayat Kunjungan</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
         </ul>

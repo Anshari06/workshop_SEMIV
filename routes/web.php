@@ -11,6 +11,8 @@ use App\Http\Controllers\Customer\Keranjang;
 use App\Http\Controllers\CustomerCamera;
 use App\Http\Controllers\Vendor\VendorDashboardController;
 use App\Http\Controllers\Vendor\ScannerVendor;
+use App\Http\Controllers\TokoController;
+use App\Http\Controllers\GeotagController;
 
 Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [DashboardCustomer::class, 'index'])->name('dashboard');
@@ -122,7 +124,20 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('geotag')->name('Geotag.')->group(function () {
-        Route::get('/geotag', [App\Http\Controllers\GeotagController::class, 'index'])->name('index');
+        Route::get('/geotag', [GeotagController::class, 'index'])->name('index');
+        Route::get('/riwayat', [GeotagController::class, 'riwayat'])->name('riwayat');
+        Route::get('/tokos', [GeotagController::class, 'getTokos'])->name('tokos');
+        Route::get('/search', [GeotagController::class, 'search'])->name('search');
+        Route::post('/kunjungan', [GeotagController::class, 'storeKunjungan'])->name('kunjungan');
+    });
+
+    Route::prefix('toko')->name('toko.')->group(function () {
+        Route::get('/', [TokoController::class, 'index'])->name('index');
+        Route::get('/create', [TokoController::class, 'create'])->name('create');
+        Route::post('/store', [TokoController::class, 'store'])->name('store');
+        Route::get('/{barcode}/edit', [TokoController::class, 'edit'])->name('edit');
+        Route::put('/{barcode}', [TokoController::class, 'update'])->name('update');
+        Route::delete('/{barcode}', [TokoController::class, 'destroy'])->name('destroy');
     });
 
     Route::middleware(['vendor'])->group(function () {

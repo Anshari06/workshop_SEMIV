@@ -218,15 +218,21 @@
     });
   }
   if ($.cookie('purple-pro-banner') != "true") {
-    document.querySelector('#proBanner').classList.add('d-flex');
-    document.querySelector('.navbar').classList.remove('fixed-top');
+    var proBanner = document.querySelector('#proBanner');
+    var nav = document.querySelector('.navbar');
+    if (proBanner) proBanner.classList.add('d-flex');
+    if (nav) nav.classList.remove('fixed-top');
   } else {
-    document.querySelector('#proBanner').classList.add('d-none');
-    document.querySelector('.navbar').classList.add('fixed-top');
+    var proBanner = document.querySelector('#proBanner');
+    var nav = document.querySelector('.navbar');
+    if (proBanner) proBanner.classList.add('d-none');
+    if (nav) nav.classList.add('fixed-top');
   }
 
   if ($(".navbar").hasClass("fixed-top")) {
-    document.querySelector('.page-body-wrapper').classList.remove('pt-0');
+    var pageBody = document.querySelector('.page-body-wrapper');
+    if (pageBody) pageBody.classList.remove('pt-0');
+  }
     document.querySelector('.navbar').classList.remove('pt-5');
   } else {
     document.querySelector('.page-body-wrapper').classList.add('pt-0');
