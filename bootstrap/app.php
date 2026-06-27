@@ -20,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             'payment/midtrans/callback',
+            'nfc/scan',
+            'nfc/read',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -3,26 +3,18 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Force HTTPS and asset URLs when accessed via ngrok or any HTTPS domain
-        if (request()->getScheme() === 'https') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
-            \Illuminate\Routing\UrlGenerator::forceRootUrl(request()->getScheme() . '://' . request()->getHttpHost());
+        // Agar route() & asset() pakai URL sesuai request saat ini (bukan APP_URL)
+        $scheme = request()->getScheme();           // http atau https
+        $host = request()->getHttpHost();           // domain yang diakses
+
+        if ($scheme && $host) {
+            URL::forceRootUrl($scheme . '://' . $host);
         }
     }
 }

@@ -1,101 +1,108 @@
 @extends('layouts.apps')
 @section('content')
 <style>
-    .nfc-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        border: 1px solid #e5e7eb;
+    .nfc-scan-zone {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 32px;
+        color: #fff;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
     }
-    .nfc-icon-scan {
-        width: 120px;
-        height: 120px;
-        border: 4px dashed #4b49ac;
+    .nfc-scan-zone::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate-bg 6s linear infinite;
+    }
+    @keyframes rotate-bg {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .nfc-ring {
+        width: 140px;
+        height: 140px;
+        border: 5px solid rgba(255,255,255,0.3);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 20px;
+        margin: 0 auto 16px;
+        position: relative;
         transition: all 0.3s ease;
     }
-    .nfc-icon-scan.scanning {
-        border-color: #2dc76d;
-        background: #f0fff4;
-        animation: pulse-scan 1.5s infinite;
+    .nfc-ring::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.5);
+        animation: ping-ring 1.5s ease-out infinite;
     }
-    .nfc-icon-scan.success {
-        border-color: #2dc76d;
-        background: #f0fff4;
+    .nfc-ring.scanning { border-color: #4ade80; }
+    .nfc-ring.scanning::after { border-color: #4ade80; }
+    .nfc-ring.success { border-color: #4ade80; background: rgba(74,222,128,0.15); }
+    .nfc-ring.error { border-color: #f87171; background: rgba(248,113,113,0.15); }
+    .nfc-ring.registered { border-color: #fbbf24; background: rgba(251,191,36,0.15); }
+    @keyframes ping-ring {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(1.5); opacity: 0; }
     }
-    .nfc-icon-scan.danger {
-        border-color: #dc3545;
-        background: #fff5f5;
-    }
-    .nfc-icon-scan.registered {
-        border-color: #f59e0b;
-        background: #fffbeb;
-    }
-    @keyframes pulse-scan {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.08); }
-    }
-    .scan-btn {
-        background: #4b49ac;
-        color: #fff;
+    .btn-scan {
+        background: #fff;
+        color: #667eea;
         border: none;
-        padding: 14px 32px;
-        border-radius: 8px;
+        padding: 14px 36px;
+        border-radius: 50px;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.2s;
+        position: relative;
+        z-index: 1;
     }
-    .scan-btn:hover { background: #3a3780; }
-    .scan-btn:disabled { background: #a0a0a0; cursor: not-allowed; }
-    .scan-btn-danger { background: #dc3545; }
-    .scan-btn-danger:hover { background: #c82333; }
-    .result-box {
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 16px;
-        margin-top: 16px;
+    .btn-scan:hover { background: #f0f0ff; transform: scale(1.03); }
+    .btn-scan:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-scan:active { transform: scale(0.97); }
+    .result-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
+        margin-top: 20px;
     }
-    .result-box.success { border-color: #2dc76d; background: #f0fff4; }
-    .result-box.danger { border-color: #dc3545; background: #fff5f5; }
-    .result-box.registered { border-color: #f59e0b; background: #fffbeb; }
-    .result-box.waiting { border-color: #64748b; background: #f8fafc; }
-    .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
+    .result-card.success { border-color: #4ade80; }
+    .result-card.error { border-color: #f87171; }
+    .result-card.registered { border-color: #fbbf24; }
+    .success-name { font-size: 22px; font-weight: 800; color: #166534; }
+    .success-time { font-size: 48px; font-weight: 900; color: #22c55e; line-height: 1; }
+    .stat-box {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
     }
-    .info-item {
-        background: rgba(255,255,255,0.7);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 8px;
-        padding: 10px 12px;
-    }
-    .info-item label {
-        display: block;
-        font-size: 11px;
-        text-transform: uppercase;
-        color: #64748b;
-        font-weight: 600;
-        margin-bottom: 2px;
-    }
-    .info-item .value {
-        font-size: 15px;
-        font-weight: 700;
-        color: #1f2937;
-    }
-    .badge-support { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-    .badge-unsupport { background: #fee2e2; color: #991b1b; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #64748b; font-weight: 700; margin-bottom: 10px; }
-    .user-success-name { font-size: 24px; font-weight: 800; color: #166534; }
-    .user-success-time { font-size: 32px; font-weight: 800; color: #2dc76d; }
-    .user-success-date { font-size: 14px; color: #64748b; }
+    .stat-number { font-size: 36px; font-weight: 900; color: #4b49ac; }
+    .stat-number.green { color: #22c55e; }
+    .stat-number.red { color: #ef4444; }
+    .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #9ca3af; font-weight: 600; margin-top: 4px; }
+    .badge-api { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge-api.ok { background: #dcfce7; color: #166534; }
+    .badge-api.no { background: #fee2e2; color: #991b1b; }
+    .info-card { background: #f8fafc; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb; }
+    .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-size: 12px; color: #9ca3af; font-weight: 600; text-transform: uppercase; }
+    .info-value { font-size: 14px; color: #374151; font-weight: 700; }
 </style>
 
 <div class="page-header">
@@ -114,123 +121,164 @@
 
 <div id="alertArea"></div>
 
+{{-- DEBUG: Raw NFC Data --}}
+<div class="result-card mb-4" id="debugCard" style="display:none">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:700;margin:0">Raw NFC Data</p>
+        <button onclick="document.getElementById('debugCard').style.display='none'" class="btn btn-sm btn-outline-secondary">Tutup</button>
+    </div>
+    <pre id="debugContent" style="font-size:11px;white-space:pre-wrap;word-break:break-all;color:#374151;margin:0;background:#f8fafc;padding:12px;border-radius:8px"></pre>
+</div>
+
 <div class="row g-4">
 
     {{-- LEFT: Scanner --}}
     <div class="col-lg-5">
-        <div class="nfc-card text-center">
-            <p class="section-label">Scan NFC Card</p>
-
-            <div id="nfcIconArea" class="nfc-icon-scan">
-                <i class="mdi mdi-nfc" style="font-size:3rem;color:#4b49ac"></i>
+        <div class="nfc-scan-zone">
+            <div id="nfcRing" class="nfc-ring">
+                <i id="nfcIcon" class="mdi mdi-nfc" style="font-size:3.5rem;color:#fff;position:relative;z-index:1"></i>
             </div>
-
-            <p id="scanStatus" class="text-muted mb-3">Tekan tombol untuk memulai scan NFC</p>
-
-            <div class="d-flex justify-content-center gap-2 flex-wrap mb-3">
-                <button type="button" id="btnScanNfc" class="scan-btn">
-                    <i class="mdi mdi-nfc-search-variant me-1"></i> Mulai Scan NFC
+            <p id="scanStatus" style="position:relative;z-index:1;font-size:15px;opacity:0.9;margin-bottom:16px">
+                Tempelkan kartu NFC ke HP
+            </p>
+            <div style="position:relative;z-index:1">
+                <button type="button" id="btnScanNfc" class="btn-scan">
+                    <i class="mdi mdi-nfc-search-variant me-2"></i> Mulai Scan
                 </button>
-                <button type="button" id="btnStopNfc" class="scan-btn scan-btn-danger" style="display:none">
-                    <i class="mdi mdi-close me-1"></i> Stop
+                <button type="button" id="btnStopNfc" class="btn-scan" style="background:rgba(255,255,255,0.15);color:#fff;display:none;margin-top:8px">
+                    <i class="mdi mdi-close me-2"></i> Batal
                 </button>
             </div>
-
-            <div id="nfcSupportInfo" class="mb-2"></div>
-
-            <hr class="my-3">
-
-            <p class="section-label">Atau Input Manual (Tanpa NFC)</p>
-            <div class="d-flex gap-2 justify-content-center">
-                <input type="text" id="manualNfcUid" class="form-control" placeholder="Contoh: 04:AB:CD:12:34" style="max-width:220px">
-                <button type="button" id="btnManualScan" class="scan-btn" style="padding:10px 20px;font-size:14px">
-                    <i class="mdi mdi-keyboard-return me-1"></i> Submit
-                </button>
-            </div>
-
-            <div id="nfcResult" class="result-box waiting" style="display:none">
-                <p class="section-label mb-2">Hasil</p>
-                <div id="resultContent">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>NFC UID</label>
-                            <div class="value" id="nfcSerial">-</div>
-                        </div>
-                        <div class="info-item">
-                            <label>Status</label>
-                            <div class="value" id="nfcStatus">-</div>
-                        </div>
-                        <div class="info-item" style="grid-column:1/-1;display:none" id="nfcUserItem">
-                            <label>Nama User</label>
-                            <div class="value user-success-name" id="nfcUserName">-</div>
-                        </div>
-                        <div class="info-item" style="grid-column:1/-1;display:none" id="nfcTimeItem">
-                            <label>Waktu Absen</label>
-                            <div class="value user-success-time" id="nfcTime">-</div>
-                            <div class="user-success-date" id="nfcDate">-</div>
-                        </div>
-                    </div>
+            <div style="position:relative;z-index:1;margin-top:20px">
+                <div id="apiSupport" class="badge-api no">
+                    <i class="mdi mdi-loading mdi-spin"></i> Memeriksa NFC...
                 </div>
+            </div>
+        </div>
+
+        {{-- Result Card --}}
+        <div class="result-card" id="resultCard" style="display:none">
+            <div id="resultSuccess" style="display:none;text-align:center">
+                <div style="margin-bottom:16px">
+                    <i class="mdi mdi-check-circle" style="font-size:48px;color:#22c55e"></i>
+                </div>
+                <div class="success-name mb-2" id="resUserName">-</div>
+                <div class="success-time" id="resTime">--:--:--</div>
+                <div style="font-size:12px;color:#9ca3af;margin-top:8px" id="resDate">-</div>
+            </div>
+            <div id="resultRegistered" style="display:none;text-align:center">
+                <div style="margin-bottom:16px">
+                    <i class="mdi mdi-clock-alert" style="font-size:48px;color:#f59e0b"></i>
+                </div>
+                <div style="font-size:16px;font-weight:700;color:#92400e" id="resAlreadyName">-</div>
+                <div style="font-size:14px;color:#b45309;margin-top:8px" id="resAlreadyTime">Sudah absen: --:--:--</div>
+            </div>
+            <div id="resultError" style="display:none;text-align:center">
+                <div style="margin-bottom:16px">
+                    <i class="mdi mdi-alert-circle" style="font-size:48px;color:#ef4444"></i>
+                </div>
+                <div style="font-size:16px;font-weight:700;color:#991b1b">UID Tidak Terdaftar</div>
+                <div style="font-size:13px;color:#dc2626;margin-top:8px">NFC UID ini belum didaftarkan ke user manapun.</div>
+            </div>
+        </div>
+
+        {{-- Input Manual --}}
+        <div class="info-card mt-3">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:700;margin-bottom:12px">
+                Input Manual (Tanpa NFC)
+            </div>
+            <div class="input-group">
+                <input type="text" id="manualUid" class="form-control" placeholder="Contoh: C3:F6:46:18" style="border-radius:50px 0 0 50px">
+                <button type="button" id="btnManual" class="btn btn-primary" style="border-radius:0 50px 50px 0;padding:0 20px">
+                    Absen
+                </button>
             </div>
         </div>
     </div>
 
-    {{-- RIGHT: Info & Today's Stats --}}
+    {{-- RIGHT: Stats & Info --}}
     <div class="col-lg-7">
-        <div class="nfc-card mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <p class="section-label mb-0">Statistik Hari Ini</p>
-                <a href="{{ route('nfc.today') }}" class="btn btn-sm btn-outline-primary">
-                    <i class="mdi mdi-arrow-right"></i> Detail
-                </a>
-            </div>
-            <div class="info-grid">
-                <div class="info-item text-center">
-                    <label>Total User NFC</label>
-                    <div class="value" style="font-size:28px" id="totalNfcUsers">{{ \App\Models\User::whereNotNull('nfc_uid')->count() }}</div>
+        {{-- Stats Today --}}
+        <div class="row g-3 mb-4">
+            <div class="col-4">
+                <div class="stat-box">
+                    <div class="stat-number">{{ \App\Models\User::whereNotNull('nfc_uid')->count() }}</div>
+                    <div class="stat-label">User NFC</div>
                 </div>
-                <div class="info-item text-center">
-                    <label>Sudah Absen Hari Ini</label>
-                    <div class="value" style="font-size:28px;color:#2dc76d" id="todayCount">{{ \App\Models\Attendance::whereDate('scanned_at', \Carbon\Carbon::today('Asia/Jakarta'))->count() }}</div>
+            </div>
+            <div class="col-4">
+                <div class="stat-box">
+                    <div class="stat-number green">{{ \App\Models\Attendance::whereDate('scanned_at', \Carbon\Carbon::today('Asia/Jakarta'))->count() }}</div>
+                    <div class="stat-label">Hadir Hari Ini</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="stat-box">
+                    <div class="stat-number red">{{ max(0, \App\Models\User::whereNotNull('nfc_uid')->count() - \App\Models\Attendance::whereDate('scanned_at', \Carbon\Carbon::today('Asia/Jakarta'))->count()) }}</div>
+                    <div class="stat-label">Belum Absen</div>
                 </div>
             </div>
         </div>
 
-        <div class="nfc-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <p class="section-label mb-0">Petunjuk Penggunaan</p>
+        {{-- Info --}}
+        <div class="info-card mb-3">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:700;margin-bottom:12px">
+                Informasi Scan
             </div>
-
-            <div class="mb-3">
-                <h6 style="font-size:14px;font-weight:700;color:#1f2937" class="mb-2">
-                    <i class="mdi mdi-cellphone text-primary me-1"></i> Syarat Perangkat
-                </h6>
-                <ul style="font-size:13px;color:#4b5563;padding-left:18px">
-                    <li>Hanya berjalan di <strong>Android Chrome v89+</strong></li>
-                    <li>Perangkat harus memiliki <strong>chip NFC</strong></li>
-                    <li>Wajib menggunakan <strong>HTTPS</strong> atau <strong>localhost</strong></li>
-                    <li><strong>iOS Safari tidak mendukung</strong> Web NFC API</li>
-                </ul>
+            <div class="info-row">
+                <span class="info-label">NFC UID</span>
+                <span class="info-value" id="infoUid">-</span>
             </div>
-
-            <div class="mb-3">
-                <h6 style="font-size:14px;font-weight:700;color:#1f2937" class="mb-2">
-                    <i class="mdi mdi-format-list-numbered text-primary me-1"></i> Cara Pakai
-                </h6>
-                <ol style="font-size:13px;color:#4b5563;padding-left:18px">
-                    <li>Klik tombol <strong>"Mulai Scan NFC"</strong></li>
-                    <li>Dekatkan NFC card ke bagian <strong>belakang HP</strong> (< 4 cm)</li>
-                    <li>Hasil absensi akan muncul secara otomatis</li>
-                    <li><strong>1 user hanya bisa 1x absen/hari</strong></li>
-                </ol>
+            <div class="info-row">
+                <span class="info-label">Waktu Scan</span>
+                <span class="info-value" id="infoTime">-</span>
             </div>
+            <div class="info-row">
+                <span class="info-label">Status</span>
+                <span class="info-value" id="infoStatus">-</span>
+            </div>
+        </div>
 
-            <div class="alert alert-light border">
-                <small class="text-muted">
-                    <i class="mdi mdi-information-outline me-1"></i>
-                    Web NFC API memungkinkan halaman web membaca NFC tag langsung dari browser.
-                    <strong>Setiap NFC UID hanya bisa absen 1x per hari.</strong>
-                </small>
+        {{-- Quick Links --}}
+        <div class="row g-2 mb-3">
+            <div class="col-6">
+                <a href="{{ route('nfc.today') }}" class="btn btn-outline-primary w-100" style="border-radius:12px;padding:12px">
+                    <i class="mdi mdi-calendar-today me-1"></i> Hadir Hari Ini
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="{{ route('nfc.history') }}" class="btn btn-outline-primary w-100" style="border-radius:12px;padding:12px">
+                    <i class="mdi mdi-history me-1"></i> Riwayat Absensi
+                </a>
+            </div>
+        </div>
+
+        {{-- Petunjuk --}}
+        <div class="info-card">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:700;margin-bottom:12px">
+                Petunjuk Penggunaan
+            </div>
+            <div style="font-size:13px;color:#374151">
+                <div style="display:flex;gap:10px;margin-bottom:10px">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">1</div>
+                    <div>Klik <strong>"Mulai Scan"</strong> pada tombol di atas</div>
+                </div>
+                <div style="display:flex;gap:10px;margin-bottom:10px">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">2</div>
+                    <div>Tempelkan kartu NFC ke bagian <strong>belakang HP</strong> (< 4 cm)</div>
+                </div>
+                <div style="display:flex;gap:10px;margin-bottom:10px">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">3</div>
+                    <div>Tunggu hingga muncul notifikasi <strong>Berhasil / Sudah Absen / UID Tidak Terdaftar</strong></div>
+                </div>
+                <div style="display:flex;gap:10px">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#667eea;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">4</div>
+                    <div>Setiap user hanya bisa absen <strong>1x per hari</strong></div>
+                </div>
+            </div>
+            <div class="alert alert-light mt-3 mb-0" style="font-size:12px">
+                <i class="mdi mdi-information-outline me-1"></i>
+                Web NFC hanya berjalan di <strong>Android Chrome v89+</strong>. iOS tidak didukung.
             </div>
         </div>
     </div>
@@ -241,208 +289,264 @@
 @push('scripts')
 <script>
 (function(){
-    const btnScan  = document.getElementById('btnScanNfc');
-    const btnStop  = document.getElementById('btnStopNfc');
-    const status   = document.getElementById('scanStatus');
-    const iconArea = document.getElementById('nfcIconArea');
-    const resultBox= document.getElementById('nfcResult');
-    const serialEl = document.getElementById('nfcSerial');
-    const statusEl = document.getElementById('nfcStatus');
-    const userItem = document.getElementById('nfcUserItem');
-    const userName = document.getElementById('nfcUserName');
-    const timeItem = document.getElementById('nfcTimeItem');
-    const timeEl   = document.getElementById('nfcTime');
-    const dateEl   = document.getElementById('nfcDate');
-    const nfcInfo  = document.getElementById('nfcSupportInfo');
+    var btnScan  = document.getElementById('btnScanNfc');
+    var btnStop  = document.getElementById('btnStopNfc');
+    var nfcRing  = document.getElementById('nfcRing');
+    var nfcIcon  = document.getElementById('nfcIcon');
+    var status   = document.getElementById('scanStatus');
+    var resultCard = document.getElementById('resultCard');
+    var resultSuccess = document.getElementById('resultSuccess');
+    var resultRegistered = document.getElementById('resultRegistered');
+    var resultError = document.getElementById('resultError');
+    var apiSupport = document.getElementById('apiSupport');
+    var infoUid = document.getElementById('infoUid');
+    var infoTime = document.getElementById('infoTime');
+    var infoStatus = document.getElementById('infoStatus');
+    var debugCard = document.getElementById('debugCard');
+    var debugContent = document.getElementById('debugContent');
 
-    let ndef = null;
-    let isScanning = false;
+    var ndef = null;
+    var isScanning = false;
+
+    // Check NFC support
+    if ('NDEFReader' in window) {
+        apiSupport.className = 'badge-api ok';
+        apiSupport.innerHTML = '<i class="mdi mdi-check-circle"></i> NFC Tersedia';
+    } else {
+        apiSupport.className = 'badge-api no';
+        apiSupport.innerHTML = '<i class="mdi mdi-close-circle"></i> NFC Tidak Tersedia';
+        btnScan.disabled = true;
+        btnScan.innerHTML = '<i class="mdi mdi-close-circle me-2"></i> NFC Tidak Tersedia';
+    }
 
     function showAlert(type, msg){
         var area = document.getElementById('alertArea');
         var icon = type==='success'?'check-circle':type==='danger'?'alert-circle':type==='warning'?'alert':'info';
-        area.innerHTML = '<div class="alert alert-'+type+' d-flex align-items-center gap-2"><i class="mdi mdi-'+icon+'"></i> '+msg+'</div>';
-        setTimeout(function(){area.innerHTML='';}, 8000);
+        area.innerHTML = '<div class="alert alert-'+type+' alert-dismissible fade show d-flex align-items-center gap-2"><i class="mdi mdi-'+icon+'"></i> '+msg+'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
     }
 
-    function checkSupport(){
-        if (!('NDEFReader' in window)) {
-            btnScan.disabled = true;
-            nfcInfo.innerHTML = '<span class="badge-unsupport"><i class="mdi mdi-close-circle me-1"></i> Web NFC API tidak tersedia</span>';
-            showAlert('danger', 'Browser tidak mendukung Web NFC. Gunakan input manual di bawah atau buka di Android Chrome.');
-            return false;
-        }
-        nfcInfo.innerHTML = '<span class="badge-support"><i class="mdi mdi-check-circle me-1"></i> Web NFC API tersedia</span>';
-        return true;
+    function resetUI(){
+        nfcRing.className = 'nfc-ring';
+        resultCard.style.display = 'none';
+        resultSuccess.style.display = 'none';
+        resultRegistered.style.display = 'none';
+        resultError.style.display = 'none';
     }
 
-    function showResult(type, serial, userNameVal, timeVal, dateVal){
-        serialEl.textContent = serial;
-        resultBox.style.display = 'block';
-
-        iconArea.className = 'nfc-icon-scan';
-
-        if (type === 'success'){
-            statusEl.textContent = '✅ Absensi Berhasil';
-            statusEl.style.color = '#166534';
-            resultBox.className = 'result-box success';
-            iconArea.classList.add('success');
-            userItem.style.display = 'block';
-            userName.textContent = userNameVal;
-            timeItem.style.display = 'block';
-            timeEl.textContent = timeVal;
-            dateEl.textContent = dateVal;
-            showAlert('success', 'Absensi berhasil! Selamat, ' + userNameVal);
-        } else if (type === 'already') {
-            statusEl.textContent = '⚠️ Sudah Absen';
-            statusEl.style.color = '#92400e';
-            resultBox.className = 'result-box registered';
-            iconArea.classList.add('registered');
-            userItem.style.display = 'block';
-            userName.textContent = userNameVal;
-            timeItem.style.display = 'block';
-            timeEl.textContent = 'Sudah absen: ' + timeVal;
-            timeEl.style.fontSize = '16px';
-            dateEl.textContent = '';
-            showAlert('warning', userNameVal + ' sudah absen hari ini.');
-        } else {
-            statusEl.textContent = '❌ UID Tidak Terdaftar';
-            statusEl.style.color = '#991b1b';
-            resultBox.className = 'result-box danger';
-            iconArea.classList.add('danger');
-            userItem.style.display = 'none';
-            timeItem.style.display = 'none';
-            showAlert('danger', 'NFC UID tidak terdaftar di sistem.');
-        }
+    function showSuccess(uid, name, time, date){
+        resetUI();
+        nfcRing.classList.add('success');
+        nfcIcon.className = 'mdi mdi-check';
+        resultCard.style.display = 'block';
+        resultCard.className = 'result-card success';
+        resultSuccess.style.display = 'block';
+        document.getElementById('resUserName').textContent = name;
+        document.getElementById('resTime').textContent = time;
+        document.getElementById('resDate').textContent = date;
+        infoUid.textContent = uid;
+        infoTime.textContent = time;
+        infoStatus.textContent = 'Berhasil';
+        infoStatus.style.color = '#22c55e';
+        showAlert('success', 'Absensi berhasil! Selamat, ' + name + '.');
     }
 
-    function submitScan(nfcUid){
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('nfc.scan') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-        xhr.setRequestHeader('Accept', 'application/json');
-        xhr.onload = function(){
-            try {
-                var json = JSON.parse(xhr.responseText);
-                if (json.status === true){
-                    showResult('success', nfcUid, json.user.name, json.scanned_at.split(' ')[1], json.scanned_at.split(' ')[0]);
-                } else if (json.status === 'already'){
-                    showResult('already', nfcUid, json.user.name, json.user.scanned_at, '');
-                } else {
-                    showResult('danger', nfcUid, null, null, null);
-                }
-            } catch(e){
-                showAlert('danger', 'Gagal memproses response server.');
-                iconArea.classList.remove('scanning');
-            }
-            btnScan.disabled = false;
-            btnScan.style.display = 'inline-flex';
-            btnStop.style.display = 'none';
-            isScanning = false;
-        };
-        xhr.onerror = function(){
-            showAlert('danger', 'Gagal terhubung ke server.');
-            btnScan.disabled = false;
-            btnScan.style.display = 'inline-flex';
-            btnStop.style.display = 'none';
-            isScanning = false;
-            iconArea.classList.remove('scanning');
-        };
-        xhr.send(JSON.stringify({nfc_uid: nfcUid}));
+    function showAlready(uid, name, time){
+        resetUI();
+        nfcRing.classList.add('registered');
+        nfcIcon.className = 'mdi mdi-clock-outline';
+        resultCard.style.display = 'block';
+        resultCard.className = 'result-card registered';
+        resultRegistered.style.display = 'block';
+        document.getElementById('resAlreadyName').textContent = name;
+        document.getElementById('resAlreadyTime').textContent = 'Sudah absen: ' + time;
+        infoUid.textContent = uid;
+        infoTime.textContent = time;
+        infoStatus.textContent = 'Sudah Absen';
+        infoStatus.style.color = '#f59e0b';
+        showAlert('warning', name + ' sudah absen hari ini.');
+    }
+
+    function showNotFound(uid){
+        resetUI();
+        nfcRing.classList.add('error');
+        nfcIcon.className = 'mdi mdi-alert-circle';
+        resultCard.style.display = 'block';
+        resultCard.className = 'result-card error';
+        resultError.style.display = 'block';
+        infoUid.textContent = uid;
+        infoTime.textContent = '-';
+        infoStatus.textContent = 'Tidak Terdaftar';
+        infoStatus.style.color = '#ef4444';
+        showAlert('danger', 'NFC UID tidak terdaftar. Hubungi admin untuk mendaftarkan kartu.');
     }
 
     function startScan(){
-        if (!checkSupport()) return;
+        if (!('NDEFReader' in window)) return;
         if (isScanning) return;
 
         ndef = new NDEFReader();
-        btnScan.disabled = true;
         btnScan.style.display = 'none';
         btnStop.style.display = 'inline-flex';
-        status.textContent = 'Dekatkan NFC card ke belakang HP (< 4 cm)...';
-        status.className = 'text-primary mb-3';
-        iconArea.classList.add('scanning');
-        iconArea.classList.remove('success','danger','registered');
-        resultBox.style.display = 'none';
+        nfcRing.classList.add('scanning');
+        status.textContent = 'Mendeteksi NFC...';
         isScanning = true;
+        resetUI();
 
         ndef.scan().then(function(){
             ndef.onreadingerror = function(){
-                showAlert('danger', 'Gagal membaca NFC. Coba dekatkan card lagi.');
+                status.textContent = 'Kartu tidak terbaca. Coba tempelkan lagi.';
+                nfcRing.classList.remove('scanning');
+                showAlert('danger', 'Kartu NFC tidak terbaca. Pastikan kartu proprietary (seperti KRL/e-money) tidak bisa digunakan. Coba NFC tag kosong.');
             };
-
             ndef.onreading = function(event){
-                var nfcUid = event.serialNumber || 'unknown';
+                var nfcUid = null;
 
-                // Try to read text record
-                if (event.message && event.message.records){
-                    var records = event.message.records;
-                    for (var i = 0; i < records.length; i++){
-                        if (records[i].recordType === 'text'){
-                            try {
-                                var decoder = new TextDecoder();
-                                var text = decoder.decode(records[i].data);
-                                if (text.trim()) nfcUid = text.trim();
-                            } catch(e){}
-                            break;
+                if (event.serialNumber && event.serialNumber.trim()) {
+                    nfcUid = event.serialNumber.trim().toUpperCase();
+                }
+
+                if (!nfcUid || nfcUid === 'UNKNOWN') {
+                    if (event.message && event.message.records) {
+                        for (var i = 0; i < event.message.records.length; i++) {
+                            var rec = event.message.records[i];
+                            if (rec.recordType === 'text' || rec.recordType === 'url') {
+                                try {
+                                    var text = new TextDecoder().decode(rec.data).trim();
+                                    if (text) { nfcUid = text; break; }
+                                } catch(e){}
+                            }
                         }
                     }
                 }
 
-                iconArea.classList.remove('scanning');
+                if (!nfcUid || nfcUid === 'UNKNOWN') {
+                    nfcUid = 'NFC-' + Date.now();
+                }
+
+                nfcRing.classList.remove('scanning');
                 stopScan();
 
-                showAlert('info', 'NFC terdeteksi! UID: ' + nfcUid + ' — Memproses...');
-                submitScan(nfcUid);
+                // Debug info
+                debugContent.textContent = 'serialNumber: ' + (event.serialNumber || 'null') + '\nUID used: ' + nfcUid;
+                debugCard.style.display = 'block';
+
+                status.textContent = 'NFC terdeteksi! Memproses...';
+                sendToServer(nfcUid);
             };
         }).catch(function(err){
-            btnScan.disabled = false;
             btnScan.style.display = 'inline-flex';
             btnStop.style.display = 'none';
-            status.textContent = 'Tekan tombol untuk memulai scan';
-            status.className = 'text-muted mb-3';
-            iconArea.classList.remove('scanning');
+            nfcRing.classList.remove('scanning');
+            status.textContent = 'Gagal memulai NFC.';
             isScanning = false;
-            showAlert('danger', 'Gagal memulai NFC: ' + err.message);
+            var msg = err.message || 'Tidak diketahui';
+            if (msg.includes('NotAllowedError')) {
+                showAlert('danger', 'Izin NFC ditolak. Aktifkan NFC di pengaturan HP.');
+            } else {
+                showAlert('danger', 'Gagal NFC: ' + msg);
+            }
         });
     }
 
     function stopScan(){
-        if (ndef) {
-            ndef.onreading = null;
-            ndef.onreadingerror = null;
-        }
+        if (ndef) { ndef.onreading = null; ndef.onreadingerror = null; }
         ndef = null;
         isScanning = false;
-        btnScan.disabled = false;
         btnScan.style.display = 'inline-flex';
         btnStop.style.display = 'none';
+        nfcRing.classList.remove('scanning');
         status.textContent = 'Scan selesai.';
-        status.className = 'text-muted mb-3';
-        iconArea.classList.remove('scanning');
     }
 
+    function sendToServer(nfcUid){
+        status.textContent = 'Mengirim ke server...';
+        var csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '{{ csrf_token() }}';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/nfc/scan', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.timeout = 15000;
+
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState === 4) {
+                btnScan.style.display = 'inline-flex';
+                btnStop.style.display = 'none';
+                isScanning = false;
+
+                var now = new Date();
+                var timeStr = now.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+                var dateStr = now.toLocaleDateString('id-ID', {day:'2-digit',month:'long',year:'numeric'});
+
+                if (xhr.status === 0) {
+                    status.textContent = 'Koneksi gagal.';
+                    showAlert('danger', 'Gagal terhubung ke server. Pastikan HP terhubung ke internet dan ngrok aktif.');
+                    return;
+                }
+
+                try {
+                    var json = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200) {
+                        if (json.status === true) {
+                            var t = (json.scanned_at || '').split(' ');
+                            showSuccess(nfcUid, json.user.name, t[1] || timeStr, t[0] || dateStr);
+                        } else if (json.status === 'already') {
+                            showAlready(nfcUid, json.user.name, json.user.scanned_at || timeStr);
+                        } else {
+                            showNotFound(nfcUid);
+                        }
+                    } else if (xhr.status === 404) {
+                        showNotFound(nfcUid);
+                    } else if (xhr.status === 419) {
+                        showAlert('danger', 'Token expired. Refresh halaman ini.');
+                    } else {
+                        showAlert('danger', 'Server error (' + xhr.status + '): ' + (json.message || 'Unknown'));
+                    }
+                } catch(e) {
+                    status.textContent = 'Error parsing response.';
+                    showAlert('danger', 'Server error (' + xhr.status + '). Response: ' + xhr.responseText.substring(0,100));
+                }
+            }
+        };
+
+        xhr.onerror = function(){
+            btnScan.style.display = 'inline-flex';
+            btnStop.style.display = 'none';
+            isScanning = false;
+            status.textContent = 'Koneksi gagal.';
+            showAlert('danger', 'Gagal terhubung ke server. Pastikan:\n1. Ngrok tunnel aktif\n2. Server Laravel berjalan\n3. HP terhubung ke internet');
+        };
+
+        xhr.ontimeout = function(){
+            btnScan.style.display = 'inline-flex';
+            btnStop.style.display = 'none';
+            isScanning = false;
+            status.textContent = 'Timeout.';
+            showAlert('danger', 'Koneksi timeout. Coba lagi.');
+        };
+
+        xhr.send(JSON.stringify({nfc_uid: nfcUid}));
+    }
+
+    // Event listeners
     btnScan.addEventListener('click', startScan);
     btnStop.addEventListener('click', stopScan);
 
-    // Manual input fallback
-    document.getElementById('btnManualScan').addEventListener('click', function(){
-        var uid = document.getElementById('manualNfcUid').value.trim();
-        if (!uid){
-            showAlert('danger', 'Masukkan NFC UID terlebih dahulu.');
-            return;
-        }
-        submitScan(uid);
+    // Manual input
+    document.getElementById('btnManual').addEventListener('click', function(){
+        var uid = document.getElementById('manualUid').value.trim();
+        if (!uid) { showAlert('danger', 'Masukkan NFC UID.'); return; }
+        resetUI();
+        nfcRing.classList.add('scanning');
+        status.textContent = 'Memproses...';
+        sendToServer(uid);
+        document.getElementById('manualUid').value = '';
     });
 
-    document.getElementById('manualNfcUid').addEventListener('keypress', function(e){
-        if (e.key === 'Enter'){
-            document.getElementById('btnManualScan').click();
-        }
+    document.getElementById('manualUid').addEventListener('keypress', function(e){
+        if (e.key === 'Enter') document.getElementById('btnManual').click();
     });
-
-    checkSupport();
 })();
 </script>
 @endpush

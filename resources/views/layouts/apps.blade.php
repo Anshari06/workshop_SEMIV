@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>project Workshop</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @php $host = Request::getHttpHost(); @endphp
     <link rel="icon" type="image/svg+xml" href="//{{ $host }}/assets/images/apple-logo.png">
     <!-- plugins:css -->
