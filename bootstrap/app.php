@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ForceHttps;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,7 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'vendor' => \App\Http\Middleware\IsVendor::class,
+            'https' => \App\Http\Middleware\ForceHttps::class,
         ]);
+        $middleware->append(ForceHttps::class);
 
         $middleware->validateCsrfTokens(except: [
             'payment/midtrans/callback',

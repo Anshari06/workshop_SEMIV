@@ -13,6 +13,7 @@ use App\Http\Controllers\Vendor\VendorDashboardController;
 use App\Http\Controllers\Vendor\ScannerVendor;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\GeotagController;
+use App\Http\Controllers\NfcController;
 
 Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [DashboardCustomer::class, 'index'])->name('dashboard');
@@ -129,6 +130,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/tokos', [GeotagController::class, 'getTokos'])->name('tokos');
         Route::get('/search', [GeotagController::class, 'search'])->name('search');
         Route::post('/kunjungan', [GeotagController::class, 'storeKunjungan'])->name('kunjungan');
+    });
+
+    Route::prefix('nfc')->name('nfc.')->group(function () {
+        Route::get('/', [NfcController::class, 'index'])->name('index');
+        Route::post('/scan', [NfcController::class, 'scan'])->name('scan');
+        Route::post('/read', [NfcController::class, 'readNfc'])->name('read');
+        Route::get('/history', [NfcController::class, 'history'])->name('history');
+        Route::get('/today', [NfcController::class, 'today'])->name('today');
     });
 
     Route::prefix('toko')->name('toko.')->group(function () {

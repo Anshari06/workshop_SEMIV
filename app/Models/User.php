@@ -28,6 +28,7 @@ class User extends Authenticatable
         'email',
         'id_google',
         'otp_code',
+        'nfc_uid',
     ];
 
     /**

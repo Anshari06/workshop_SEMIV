@@ -168,7 +168,30 @@
                     </ul>
                 </div>
             </li>
-
+            <li class="nav-item {{ Request::is('nfc*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#nfc-menu"
+                    aria-expanded="{{ Request::is('nfc*') ? 'true' : 'false' }}" aria-controls="nfc-menu">
+                    <span class="menu-title">NFC</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-nfc menu-icon"></i>
+                </a>
+                <div class="collapse {{ Request::is('nfc*') ? 'show' : '' }}" id="nfc-menu">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('nfc.index') ? 'active' : '' }}"
+                                href="{{ route('nfc.index') }}">Scan Absensi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('nfc.today') ? 'active' : '' }}"
+                                href="{{ route('nfc.today') }}">Hari Ini</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request::routeIs('nfc.history') ? 'active' : '' }}"
+                                href="{{ route('nfc.history') }}">Riwayat</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         </ul>
     </nav>
 </div>

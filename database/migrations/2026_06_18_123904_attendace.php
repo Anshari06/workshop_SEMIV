@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('pesanans', 'customer_phone')) {
-            Schema::table('pesanans', function (Blueprint $table) {
-                $table->string('customer_phone', 25)->nullable()->after('nama');
+        if (!Schema::hasTable('attendances')) {
+            Schema::create('attendances', function (Blueprint $table) {
+                $table->id();
+
+                $table->foreignId('user_id')->constrained();
+
+                $table->timestamp('scanned_at');
+
+                $table->timestamps();
             });
         }
     }
@@ -23,8 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pesanans', function (Blueprint $table) {
-            $table->dropColumn('customer_phone');
-        });
+        Schema::dropIfExists('attendances');
     }
 };

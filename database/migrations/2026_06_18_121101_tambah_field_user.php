@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('vendor', function (Blueprint $table) {
-            $table->foreignId('iduser')
-                ->nullable()
-                ->after('nama_vendor')
-                ->constrained('users', 'iduser')
-                ->nullOnDelete();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('nfc_uid')->nullable()->unique();
         });
     }
 
@@ -25,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('vendor', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('iduser');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('nfc_uid');
         });
     }
 };
